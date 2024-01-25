@@ -1,10 +1,59 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { PrismaService } from './prisma/prisma.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from "@nestjs/config";
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { CacheModule } from '@nestjs/cache-manager';
+import { join } from "path";
+import { redisStore } from 'cache-manager-redis-yet';
+import {APP_GUARD} from "@nestjs/core";
+import {AtGuard} from "./common/guards/at.guard";
+import { MathModule } from './math/math.module';
+import { FileHandlerModule } from './file-handler/file-handler.module';
+import { HistoryModule } from './history/history.module';
+import { ResourcesModule } from './resources/resources.module';
+import { TaskModule } from './task/task.module';
+import {ScheduleModule} from "@nestjs/schedule";
+import {TaskService} from "./task/task.service";
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.${process.env.NODE_ENV}.env`,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'sd-client'),
+    }),
+    CacheModule.register({
+      isGlobal: true,
+      store: redisStore,
+      ttl: 7 * 24 * 60 * 60 * 1000,
+      url: 'redis://localhost:6379',
+    }),
+    ScheduleModule.forRoot(),
+    PrismaModule,
+    UsersModule,
+    AuthModule,
+    MathModule,
+    FileHandlerModule,
+    HistoryModule,
+    ResourcesModule,
+    TaskModule
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    PrismaService,
+    {
+      provide: APP_GUARD,
+      useClass: AtGuard,
+    },
+    TaskService
+  ],
 })
 export class AppModule {}
