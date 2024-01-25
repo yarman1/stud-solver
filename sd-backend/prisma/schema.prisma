@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id       String     @id @default(uuid())
+  email         String     @unique
+  user_name     String
+  password_hash String
+  solutions     Solution[]
+
+  @@map("User")
+}
+
+model Area {
+  area_id        Int       @id @default(autoincrement())
+  name           String    @unique
+  operation_name String    @unique
+  picture_url    String
+  description    String
+  problems       Problem[]
+
+  @@map("Area")
+}
+
+model Problem {
+  problem_id            Int        @id @default(autoincrement())
+  area_id               Int
+  name                  String     @unique
+  operation_name        String     @unique
+  picture_url           String
+  description           String
+  broad_description_url String
+  Area                  Area       @relation(fields: [area_id], references: [area_id], onDelete: Cascade)
+  solutions             Solution[]
+
+  @@map("Problem")
+}
+
+model Solution {
+  solution_id String   @id @default(uuid())
+  user_id     String
+  problem_id  Int
+  result_html String
+  created_at  DateTime @default(now())
+  live_to     DateTime @default(dbgenerated("NOW() + interval '3 month'")) @db.Date
+  User        User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  Problem     Problem  @relation(fields: [problem_id], references: [problem_id], onDelete: Cascade)
+
+  @@map("Solution")
+}

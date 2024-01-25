@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= problemName %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$', right:'$', display: true}
+        ],
+        preProcess: (string) => string.replace(),
+    });"></script>
+</head>
+<body>
+<h1 style="text-align: center;"><%- problemName %></h1>
+<div>
+    <strong>Expression:</strong>
+    <span class="math-expression">$<%- expression %>$</span>
+</div>
+<div>
+    <strong>Result:</strong>
+    <span class="math-expression">$<%- result %>$</span>
+</div>
+<% if (otherProperties) { %>
+    <% otherProperties.forEach(property => { %>
+        <div>
+            <strong><%- property.name %>:</strong>
+            <span class="math-expression">$<%- property.value %>$</span>
+        </div>
+    <% }) %>
+<% } %>
+
+</body>
+</html>
