@@ -1,14 +1,33 @@
-import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Put, Req, Res, UseGuards} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus, Ip,
+  Post,
+  Put,
+  Query,
+  Req,
+  Res,
+  UseGuards, UseInterceptors
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {AuthSigninDto} from "./dto/auth.signin.dto";
 import {AuthSignupDto} from "./dto/auth.signup.dto";
 import {Public} from "../common/decorators/public.decorator";
 import {RtGuard} from "../common/guards/rt.guard";
-import {GetPayloadRtData} from "../common/decorators/get-payload-rt-data.decorator";
+import {User} from "../common/decorators/user.decorator";
 import {JwtPayload} from "./types/jwtPayload.type";
 import {Request, Response} from "Express";
 import {UsernameDto} from "./dto/username.dto";
 import {UpdatePasswordDto} from "./dto/update-password.dto";
+import {RecoveryDto} from "./dto/recovery.dto";
+import {RequestRecoveryDto} from "./dto/request-recovery.dto";
+import {Throttle} from "@nestjs/throttler";
+import {RecoveryThrottlerGuard} from "./guards/recovery-throttler.guard";
+import {BlockCheckInterceptor} from "./interceptors/block-check.interceptor";
+import {ResetDto} from "./dto/reset.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -63,8 +82,8 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(
-      @GetPayloadRtData('sub') user_id: string,
-      @GetPayloadRtData('deviceId') deviceId: string,
+      @User('sub') user_id: string,
+      @User('deviceId') deviceId: string,
       @Res() res: Response
   ) {
     await this.authService.logout(user_id, deviceId);
@@ -87,9 +106,9 @@ export class AuthController {
   @Get('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(
-      @GetPayloadRtData('sub') user_id: string,
-      @GetPayloadRtData('deviceId') deviceId: string,
-      @GetPayloadRtData('refreshToken') rt: string,
+      @User('sub') user_id: string,
+      @User('deviceId') deviceId: string,
+      @User('refreshToken') rt: string,
       @Res() res: Response
   ) {
     const { access_token, refresh_token, device_id} = await this.authService.refresh(user_id, rt, deviceId);
@@ -111,7 +130,7 @@ export class AuthController {
   @UseGuards(RtGuard)
   @Delete('user')
   @HttpCode(HttpStatus.OK)
-  async deleteUser(@GetPayloadRtData('sub') user_id: string, @Req() req: Request, @Res() res: Response) {
+  async deleteUser(@User('sub') user_id: string, @Req() req: Request, @Res() res: Response) {
     const message = await this.authService.deleteUser(user_id);
     res.clearCookie('refreshToken', {
       httpOnly: true,
@@ -131,7 +150,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async updatePassword(
       @Body() dto: UpdatePasswordDto,
-      @GetPayloadRtData('sub') user_id: string,
+      @User('sub') user_id: string,
       @Res() res: Response
       ) {
     const data = await this.authService.updatePassword(dto.oldPassword, dto.newPassword, user_id);
@@ -140,11 +159,35 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'strict',
     });
-    res.cookie('deviceId', data.newTokens.refresh_token, {
+    res.cookie('deviceId', data.newTokens.device_id, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'strict',
     });
     res.json(data.message);
+  }
+
+  @Public()
+  @UseInterceptors(BlockCheckInterceptor)
+  @UseGuards(RecoveryThrottlerGuard)
+  @Throttle({ short: { limit: 1, ttl: 15 * 60 * 1000 }, medium: { limit: 5, ttl: 2 * 60 * 60 * 1000 } })
+  @Post('recovery')
+  @HttpCode(HttpStatus.OK)
+  async requestRecovery(@Body() dto: RequestRecoveryDto, @Res() res: Response) {
+    await this.authService.requestRecovery(dto, res);
+  }
+
+  @Public()
+  @Get('reset-password')
+  @HttpCode(HttpStatus.OK)
+  async getResetPage(@Query() query: RecoveryDto, @Res() res: Response) {
+    await this.authService.getResetPage(query, res);
+  }
+
+  @Public()
+  @Put('reset-password')
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(@Body() dto: ResetDto, @Res() res: Response) {
+     await this.authService.resetPassword(dto, res);
   }
 }

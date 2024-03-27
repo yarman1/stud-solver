@@ -1,3 +1,3 @@
 import {OutputFormat} from "../types/output-format.type";
 
-export const MAIN_TYPE: OutputFormat = 'png';
+export const MAIN_TYPE: OutputFormat = OutputFormat.PNG;

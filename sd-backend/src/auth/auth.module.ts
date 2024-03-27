@@ -6,10 +6,18 @@ import {UsersModule} from "../users/users.module";
 import {JwtModule} from "@nestjs/jwt";
 import {AtStrategy} from "./strategies/at.strategy";
 import {RtStrategy} from "./strategies/rt.strategy";
+import {BullModule} from "@nestjs/bull";
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService, AtStrategy, RtStrategy],
-  imports : [PrismaModule, UsersModule, JwtModule.register({})]
+  imports : [
+      PrismaModule,
+      UsersModule,
+      JwtModule.register({}),
+      BullModule.registerQueue({
+        name: 'recovery-queue',
+      })
+  ]
 })
 export class AuthModule {}

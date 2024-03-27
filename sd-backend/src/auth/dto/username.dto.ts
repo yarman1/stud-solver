@@ -1,9 +1,11 @@
-import {IsAlphanumeric, IsNotEmpty, IsString, Length} from "class-validator";
+import {IsAlphanumeric, IsNotEmpty, IsString, Length, Matches} from "class-validator";
 
 export class UsernameDto {
-    @IsAlphanumeric()
     @IsNotEmpty()
     @IsString()
-    @Length(5, 25)
+    @Length(4, 20)
+    @Matches(/^(?!\W)[^\s]{4,20}$/, {
+        message: 'Username cannot start with special characters and must not contain spaces',
+    })
     public userName: string;
 }

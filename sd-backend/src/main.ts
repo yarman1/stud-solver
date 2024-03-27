@@ -9,9 +9,8 @@ import {NestExpressApplication} from "@nestjs/platform-express";
 async function bootstrap() {
   const PORT = process.env.PORT || 5000;
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true , transform: true}));
   app.use(cookieParser());
-  // app.setBaseViewsDir(join(__dirname, 'views'));
   app.setViewEngine('ejs');
   await app.listen(PORT, () => console.log(`Server started on port = ${PORT}`));
 }

@@ -1,5 +1,4 @@
 import {Injectable} from '@nestjs/common';
-import {spawn} from 'child_process';
 import {IndefiniteIntegralDto} from "./dto/indefinite-integral.dto";
 import {DefiniteIntegralDto} from "./dto/definite-integral.dto";
 import {PrismaService} from "../prisma/prisma.service";
@@ -10,57 +9,49 @@ import * as fs from "fs";
 import {promisify} from "util";
 import {ResultDto} from "./dto/result.dto";
 import {TransformedResultDto} from "./dto/transformed-result.dto";
+import axios, {AxiosResponse} from "axios";
+import {ConfigService} from "@nestjs/config";
+import {CustomRequest} from "../types/custom-request.type";
+import {Response} from "express";
+import {JwtPayload} from "../auth/types/jwtPayload.type";
+import {MAIN_TYPE} from "../common/constants/main-type.constant";
+import {FileHandlerService} from "../file-handler/file-handler.service";
+import {MathDbService} from "./math-db.service";
 
 const readFile = promisify(fs.readFile);
 
 @Injectable()
 export class MathService {
-    constructor(private prisma: PrismaService) {
+    constructor(
+        private prisma: PrismaService,
+        private configService: ConfigService,
+        private readonly fileHandlerService: FileHandlerService,
+        private readonly mathDbService: MathDbService
+    ) {
     }
 
     async computeIntegralIndefinite(dto: IndefiniteIntegralDto): Promise<ResultDto> {
-        const args = ['./python-scripts/indefinite-integral.py', dto.expression];
-        return await this.activateProcess(args);
+        try {
+            const response: AxiosResponse<ResultDto> = await axios.post(this.configService.get<string>('PYTHON_SERVER_URL') + "/solve-integral",{
+                ...dto
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error calling Flask server for indefinite integral: ', error);
+            throw new Error('Failed to compute indefinite integral');
+        }
     }
 
     async computeIntegralDefinite(dto: DefiniteIntegralDto): Promise<ResultDto> {
-        const args = ['./python-scripts/indefinite-integral.py', dto.expression, dto.lowerLimit, dto.upperLimit, dto.isDecimal];
-        return await this.activateProcess(args);
-    }
-
-    async activateProcess(args: string[]): Promise<ResultDto> {
-        return new Promise((resolve, reject) => {
-            const process = spawn('python', args);
-
-            let dataString = '';
-            process.stdout.on('data', (data) => {
-                dataString += data.toString();
+        try {
+            const response: AxiosResponse<ResultDto> = await axios.post(this.configService.get<string>('PYTHON_SERVER_URL') + "/solve-integral",{
+                ...dto
             });
-
-            process.stderr.on('data', (data) => {
-                console.error(`stderr: ${data}`);
-            });
-
-            process.on('error', (error) => {
-                console.error(`Error: ${error}`);
-                reject(error);
-            });
-
-            process.on('close', (code) => {
-                console.log(`Child process exited with code ${code}, output: ${dataString}`); // Added log for debugging
-                if (code !== 0) {
-                    reject(new Error(`Process exited with code ${code}`));
-                } else {
-                    try {
-                        const result = JSON.parse(dataString);
-                        resolve(result);
-                    } catch (e) {
-                        console.error(`Error parsing JSON: ${e}`);
-                        reject(e);
-                    }
-                }
-            });
-        });
+            return response.data;
+        } catch (error) {
+            console.error('Error calling Flask server for definite integral: ', error);
+            throw new Error('Failed to compute definite integral');
+        }
     }
 
     async transformSolution(resultObj: ResultDto, task: TaskDto, operation_name: string): Promise<TransformedResultDto> {
@@ -96,4 +87,15 @@ export class MathService {
         };
     }
 
+    async handleSolution(dto: TaskDto, result: ResultDto, req: CustomRequest, res: Response, operation_name: string) {
+        const resultTransformed = await this.transformSolution(result, dto, operation_name);
+        if (req.user) {
+            const user: JwtPayload = req.user as JwtPayload;
+            const {solution_id} = await this.mathDbService.saveSolution(user.sub, operation_name, resultTransformed.htmlContent);
+            res.json({solution_id: solution_id});
+        } else {
+            const downloadData = await this.fileHandlerService.createFile(resultTransformed.htmlContent, MAIN_TYPE, resultTransformed.problemName);
+            res.set(downloadData.headers).send(downloadData.file);
+        }
+    }
 }

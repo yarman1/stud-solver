@@ -51,7 +51,7 @@ export class FileHandlerService {
 
         let completeHtml = `
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
     <head>
       <style>
         body, html {
@@ -74,6 +74,7 @@ export class FileHandlerService {
           display: none;
         }
       </style>
+      <title>Result</title>
     </head>
     <body>`;
 
@@ -96,7 +97,7 @@ export class FileHandlerService {
 
         await browser.close();
 
-        return await this.generateDownloadData(file, 'pdf', userName, true);
+        return await this.generateDownloadData(file, OutputFormat.PDF, userName, true);
     }
 
 }

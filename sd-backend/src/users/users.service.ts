@@ -1,27 +1,26 @@
 import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 import { PrismaService } from "../prisma/prisma.service";
-import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
-
-const UNIQUE_FAILED_CODE = 'P2002';
 
 @Injectable()
 export class UsersService {
     constructor(private prisma: PrismaService) {}
 
     async create(email: string, passwordHash: string, userName: string) {
+        const isEmail = !!(await this.prisma.user.findUnique({where: {email}}));
+        const isUsername = !!(await this.prisma.user.findUnique({where: {user_name: userName}}));
+        if (!isEmail || !isUsername) {
+            if (!isEmail) {
+                throw new ForbiddenException('email is not unique');
+            } else {
+                throw new ForbiddenException('username is not unique')
+            }
+        }
         return this.prisma.user.create({
             data: {
                 email,
                 user_name: userName,
                 password_hash: passwordHash,
             }
-        }).catch((error) => {
-            if (error instanceof PrismaClientKnownRequestError) {
-                if (error.code === UNIQUE_FAILED_CODE) {
-                    throw new ForbiddenException('email is not unique')
-                }
-            }
-            throw error;
         });
     }
 
@@ -66,5 +65,10 @@ export class UsersService {
     async isExist(id: string) {
         const result = await this.prisma.user.findMany({where: {user_id: id}});
         return result.length != 0;
+    }
+
+    async isExistUserName(userName: string) {
+        const result = await this.prisma.user.findMany({where: {user_name: userName}});
+        return result.length > 0;
     }
 }

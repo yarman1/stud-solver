@@ -19,6 +19,8 @@ import { ResourcesModule } from './resources/resources.module';
 import { TaskModule } from './task/task.module';
 import {ScheduleModule} from "@nestjs/schedule";
 import {TaskService} from "./task/task.service";
+import {ThrottlerGuard, ThrottlerModule} from "@nestjs/throttler";
+import {ThrottlerStorageRedisService} from "nestjs-throttler-storage-redis";
 
 @Module({
   imports: [
@@ -43,7 +45,20 @@ import {TaskService} from "./task/task.service";
     FileHandlerModule,
     HistoryModule,
     ResourcesModule,
-    TaskModule
+    TaskModule,
+    ThrottlerModule.forRoot({
+      throttlers: [{
+      name: 'short',
+      ttl: 60,
+      limit: 10,
+    },
+      {
+        name: 'medium',
+        ttl: 60,
+        limit: 10,
+      }
+    ],
+    storage: new ThrottlerStorageRedisService()})
   ],
   controllers: [AppController],
   providers: [

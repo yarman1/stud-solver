@@ -10,7 +10,7 @@ datasource db {
 model User {
   user_id       String     @id @default(uuid())
   email         String     @unique
-  user_name     String
+  user_name     String     @unique
   password_hash String
   solutions     Solution[]
 

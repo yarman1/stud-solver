@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Recovery</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .password-recovery-form {
+            width: 300px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .password-recovery-form img {
+            display: block;
+            margin: 0 auto 24px;
+        }
+
+        .password-recovery-form h2 {
+            margin-bottom: 24px;
+        }
+
+        .form-field {
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="password-recovery-form">
+    <img src="../images/main-icon.svg" alt="Main Icon" width="50" height="50">
+    <h2>StudSolver</h2>
+    <p>Password recovery</p>
+    <form>
+        <input type="email" class="form-field" name="email" placeholder="Email" required>
+        <input type="submit" value="Submit" class="submit-btn">
+    </form>
+</div>
+
+</body>
+</html>

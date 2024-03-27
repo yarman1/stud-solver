@@ -1,13 +1,23 @@
-import {IsNotEmpty, IsString, Length} from "class-validator";
+import {IsString, Length, Matches} from "class-validator";
 
 export class UpdatePasswordDto {
-    @IsNotEmpty()
     @IsString()
-    @Length(10, 25)
+    @Length(10, 20)
+    @Matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}":;'<>?,.\/\\-]).*$/, {
+        message: 'Password must contain at least one uppercase letter, one number, and one special character',
+    })
+    @Matches(/^\S*$/, {
+        message: 'Password must not contain spaces',
+    })
     public oldPassword: string;
 
-    @IsNotEmpty()
     @IsString()
-    @Length(10, 25)
+    @Length(10, 20)
+    @Matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}":;'<>?,.\/\\-]).*$/, {
+        message: 'Password must contain at least one uppercase letter, one number, and one special character',
+    })
+    @Matches(/^\S*$/, {
+        message: 'Password must not contain spaces',
+    })
     public newPassword: string;
 }
