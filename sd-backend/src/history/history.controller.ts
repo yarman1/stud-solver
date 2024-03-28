@@ -30,6 +30,7 @@ export class HistoryController {
     }
 
     @Get('solution/:id')
+    @ApiResponse({description: 'picture'})
     async getSolution(@Param('id') id: string, @Res() res: Response, @Req() req: Request) {
         const user = req.user as JwtPayload;
         const downloadData = await this.historyService.getSolution(id, user.sub);
@@ -37,6 +38,7 @@ export class HistoryController {
     }
 
     @Get('solution/file')
+    @ApiResponse({description: 'download pdf/png/jpeg'})
     async downloadSolution(
         @Query() query: DownloadSolutionDto,
         @Res() res: Response,
@@ -57,6 +59,7 @@ export class HistoryController {
     }
 
     @Post('report')
+    @ApiResponse({description: 'download pdf'})
     async getReport(
         @Body(new ParseArrayPipe({items: SolutionIdDto})) solutionIdArray: string[],
         @Req() req: Request,

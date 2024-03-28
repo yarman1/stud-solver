@@ -13,6 +13,7 @@ import {ResultDto} from "./dto/result.dto";
 import {TaskDto} from "./dto/task.dto";
 import {JwtPayload} from "../auth/types/jwtPayload.type";
 import {Throttle} from "@nestjs/throttler";
+import {ApiResponse} from "@nestjs/swagger";
 
 @Public()
 @Controller('math')
@@ -23,6 +24,7 @@ export class MathController {
 
     @Post(Operations.INDEFINITE_INTEGRAL)
     @HttpCode(HttpStatus.OK)
+    @ApiResponse({description: 'solution_id if signed in; picture if not signed in'})
     async indefiniteIntegral(
         @Body() dto: IndefiniteIntegralDto,
         @Req() req: CustomRequest,
@@ -40,6 +42,7 @@ export class MathController {
     @Throttle({ default: { limit: 1, ttl: 60 * 1000 } })
     @Post(Operations.DEFINITE_INTEGRAL)
     @HttpCode(HttpStatus.OK)
+    @ApiResponse({description: 'solution_id if signed in; picture if not signed in'})
     async definiteIntegral(
         @Body() dto: DefiniteIntegralDto,
         @Req() req: CustomRequest,
