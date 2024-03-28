@@ -4,6 +4,7 @@ import {FileHandlerService} from "../file-handler/file-handler.service";
 import {MAIN_TYPE} from "../common/constants/main-type.constant";
 import {UsersService} from "../users/users.service";
 import {OutputFormat} from "../common/types/output-format.type";
+import {SolutionResponseDto} from "./dto/solution-response.dto";
 
 @Injectable()
 export class HistoryService {
@@ -24,7 +25,7 @@ export class HistoryService {
     }
 
     async getSolutions(user_id: string) {
-        return await this.prismaService.solution
+        const solutions =  await this.prismaService.solution
             .findMany({where: {user_id: user_id}})
             .then((data) => {
                 return data.map((solution) => {
@@ -32,6 +33,21 @@ export class HistoryService {
                     return cleanSolution;
                 })
             });
+        const result: SolutionResponseDto[] = [];
+        for (const solution of solutions) {
+            const problem = await this.prismaService.problem.findUnique({where: {problem_id: solution.problem_id}})
+            const problem_name = problem.name;
+            const area_id = problem.area_id;
+            const area_name = (await this.prismaService.area.findUnique({where: {area_id: area_id}})).name;
+            result.push({
+                solution_id: solution.solution_id,
+                problem_name,
+                area_name,
+                created_at: solution.created_at,
+                live_to: solution.live_to,
+            })
+        }
+        return result;
     }
 
     async deleteSolution(solution_id: string, user_id: string) {

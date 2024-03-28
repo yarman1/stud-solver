@@ -20,6 +20,9 @@ import {JwtPayload} from "../auth/types/jwtPayload.type";
 import {SolutionIdDto} from "./dto/solution-id.dto";
 import {OutputFormat} from "../common/types/output-format.type";
 import {DownloadSolutionDto} from "./dto/download-solution.dto";
+import {ApiResponse} from "@nestjs/swagger";
+import {MessageResponseDto} from "../auth/dto/message-response.dto";
+import {SolutionResponseDto} from "./dto/solution-response.dto";
 
 @Controller('history')
 export class HistoryController {
@@ -46,6 +49,7 @@ export class HistoryController {
     }
 
     @Get('solutions')
+    @ApiResponse({type: SolutionResponseDto, isArray: true})
     async getSolutions(@Res() res: Response, @Req() req: Request) {
         const user = req.user as JwtPayload;
         const solutions = await this.historyService.getSolutions(user.sub);
@@ -64,6 +68,7 @@ export class HistoryController {
     }
 
     @Delete('solution/:id')
+    @ApiResponse({type: MessageResponseDto})
     async deleteSolution(@Param('id') id: string, @Res() res: Response, @Req() req: Request) {
         const user = req.user as JwtPayload;
         await this.historyService.deleteSolution(id, user.sub);

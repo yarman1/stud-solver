@@ -28,6 +28,10 @@ import {Throttle} from "@nestjs/throttler";
 import {RecoveryThrottlerGuard} from "./guards/recovery-throttler.guard";
 import {BlockCheckInterceptor} from "./interceptors/block-check.interceptor";
 import {ResetDto} from "./dto/reset.dto";
+import {ApiExtraModels, ApiResponse} from "@nestjs/swagger";
+import {MessageResponseDto} from "./dto/message-response.dto";
+import {AccessTokenDto} from "./dto/access-token.dto";
+import {ResponseStatusCodeDto} from "./dto/response-status-code.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -36,6 +40,7 @@ export class AuthController {
   @Public()
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'User created successfully', type: MessageResponseDto })
   async signup(@Body() dto: AuthSignupDto, @Res() res: Response) {
     await this.authService.signup(dto);
     res.json({
@@ -46,6 +51,7 @@ export class AuthController {
   @Public()
   @Post('signin')
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'User created successfully', type: AccessTokenDto })
   async signin(@Body() dto: AuthSigninDto, @Res() res: Response) {
     const { access_token, refresh_token, device_id} = await this.authService.signin(dto);
 
@@ -64,6 +70,7 @@ export class AuthController {
 
   @Get('username')
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({ type: MessageResponseDto })
   async getUserName(@Res() res: Response, @Req() req: Request) {
     const user = req.user as JwtPayload;
     const message = await this.authService.getUserName(user.sub);
@@ -72,6 +79,7 @@ export class AuthController {
 
   @Put('username')
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({ type: MessageResponseDto })
   async updateUserName(@Body() dto: UsernameDto, @Res() res: Response, @Req() req: Request) {
     const user = req.user as JwtPayload;
     const message = await this.authService.updateUserName(user.sub, dto.userName);
@@ -81,6 +89,7 @@ export class AuthController {
   @UseGuards(RtGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({ type: MessageResponseDto })
   async logout(
       @User('sub') user_id: string,
       @User('deviceId') deviceId: string,
@@ -105,6 +114,7 @@ export class AuthController {
   @UseGuards(RtGuard)
   @Get('refresh')
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({ type: MessageResponseDto })
   async refresh(
       @User('sub') user_id: string,
       @User('deviceId') deviceId: string,
@@ -130,6 +140,7 @@ export class AuthController {
   @UseGuards(RtGuard)
   @Delete('user')
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({ type: MessageResponseDto })
   async deleteUser(@User('sub') user_id: string, @Req() req: Request, @Res() res: Response) {
     const message = await this.authService.deleteUser(user_id);
     res.clearCookie('refreshToken', {
@@ -148,6 +159,7 @@ export class AuthController {
   @UseGuards(RtGuard)
   @Put('password')
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({ type: MessageResponseDto })
   async updatePassword(
       @Body() dto: UpdatePasswordDto,
       @User('sub') user_id: string,
@@ -173,6 +185,7 @@ export class AuthController {
   @Throttle({ short: { limit: 1, ttl: 15 * 60 * 1000 }, medium: { limit: 5, ttl: 2 * 60 * 60 * 1000 } })
   @Post('recovery')
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({ type: ResponseStatusCodeDto })
   async requestRecovery(@Body() dto: RequestRecoveryDto, @Res() res: Response) {
     await this.authService.requestRecovery(dto, res);
   }
@@ -180,6 +193,7 @@ export class AuthController {
   @Public()
   @Get('reset-password')
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({description: 'Redirect to localhost:3000/recover?token=something'})
   async getResetPage(@Query() query: RecoveryDto, @Res() res: Response) {
     await this.authService.getResetPage(query, res);
   }
@@ -187,6 +201,7 @@ export class AuthController {
   @Public()
   @Put('reset-password')
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({type: MessageResponseDto})
   async resetPassword(@Body() dto: ResetDto, @Res() res: Response) {
      await this.authService.resetPassword(dto, res);
   }

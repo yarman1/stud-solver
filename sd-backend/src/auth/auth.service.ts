@@ -212,6 +212,10 @@ export class AuthService {
             await this.cacheManager.set(token, email, 120 * 1000);
 
             await this.sendRecoverEmail(email, token);
+            res.status(HttpStatus.OK).json({
+                statusCode: HttpStatus.OK,
+                message: 'Recover email has been sent',
+            });
         }).catch(_ => {
             res.status(HttpStatus.TOO_MANY_REQUESTS).json({
                 statusCode: HttpStatus.TOO_MANY_REQUESTS,

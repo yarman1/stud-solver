@@ -1,6 +1,8 @@
 import {IsString, Length, Matches} from "class-validator";
+import {ApiProperty} from "@nestjs/swagger";
 
 export class UpdatePasswordDto {
+    @ApiProperty()
     @IsString()
     @Length(10, 20)
     @Matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}":;'<>?,.\/\\-]).*$/, {
@@ -11,6 +13,7 @@ export class UpdatePasswordDto {
     })
     public oldPassword: string;
 
+    @ApiProperty()
     @IsString()
     @Length(10, 20)
     @Matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}":;'<>?,.\/\\-]).*$/, {

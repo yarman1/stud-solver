@@ -1,6 +1,8 @@
 import {IsAlphanumeric, IsNotEmpty, IsString, Length, Matches} from "class-validator";
+import {ApiProperty} from "@nestjs/swagger";
 
 export class UsernameDto {
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     @Length(4, 20)
