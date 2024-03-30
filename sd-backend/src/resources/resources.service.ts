@@ -43,7 +43,8 @@ export class ResourcesService {
                 operation_name: problem.operation_name,
                 picture_url: problem.picture_url,
                 description: problem.description,
-                broad_description_url: problem.broad_description_url
+                broad_description_url: problem.broad_description_url,
+                area_id: problem.area_id,
             });
         }
         return result;
@@ -57,7 +58,8 @@ export class ResourcesService {
             operation_name: problem.operation_name,
             picture_url: problem.picture_url,
             description: problem.description,
-            broad_description_url: problem.broad_description_url
+            broad_description_url: problem.broad_description_url,
+            area_id: problem.area_id,
         }
     }
 

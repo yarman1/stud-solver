@@ -91,10 +91,10 @@ export class MathService {
         const resultTransformed = await this.transformSolution(result, dto, operation_name);
         if (req.user) {
             const user: JwtPayload = req.user as JwtPayload;
-            const {solution_id} = await this.mathDbService.saveSolution(user.sub, operation_name, resultTransformed.htmlContent);
+            const solution_id = await this.mathDbService.saveSolution(user.sub, operation_name, resultTransformed.htmlContent);
             res.json({solution_id: solution_id});
         } else {
-            const downloadData = await this.fileHandlerService.createFile(resultTransformed.htmlContent, MAIN_TYPE, resultTransformed.problemName);
+            const downloadData = await this.fileHandlerService.createFile(resultTransformed.htmlContent, MAIN_TYPE, resultTransformed.problemName, true);
             res.set(downloadData.headers).send(downloadData.file);
         }
     }

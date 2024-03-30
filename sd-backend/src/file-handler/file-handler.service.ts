@@ -6,12 +6,12 @@ import * as lodash from "lodash";
 @Injectable()
 export class FileHandlerService {
     constructor() {}
-    private async generateDownloadData(file: Buffer, format: OutputFormat, name: string, isReport: boolean) {
+    private async generateDownloadData(file: Buffer, format: OutputFormat, name: string, isReport: boolean, isInline: boolean) {
         const filename = lodash.snakeCase(name) + `_${!isReport ? 'solution' : 'report'}.${format}`;
         const contentType = `${format !== 'pdf' ? 'image' : 'application'}/${format}`;
         const headers = {
             'Content-Type': contentType,
-            'Content-Disposition': `attachment; filename=${filename}`,
+            'Content-Disposition': `attachment${isInline ? 'inline' : 'attachment'}; filename=${filename}`,
         };
 
         return {
@@ -20,7 +20,7 @@ export class FileHandlerService {
         };
     }
 
-    async createFile(htmlContent: string, format: OutputFormat, problemName: string) {
+    async createFile(htmlContent: string, format: OutputFormat, problemName: string, isInline: boolean) {
         const browser = await puppeteer.launch({
             headless: "new",
         });
@@ -42,7 +42,7 @@ export class FileHandlerService {
 
         await browser.close();
 
-        return await this.generateDownloadData(file, format, problemName, false);
+        return await this.generateDownloadData(file, format, problemName, false, isInline);
     }
 
     async createReport(htmlContents: string[], userName: string) {
@@ -97,7 +97,7 @@ export class FileHandlerService {
 
         await browser.close();
 
-        return await this.generateDownloadData(file, OutputFormat.PDF, userName, true);
+        return await this.generateDownloadData(file, OutputFormat.PDF, userName, true, false);
     }
 
 }

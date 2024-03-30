@@ -17,7 +17,7 @@ import {ConfigService} from "@nestjs/config";
 import {CACHE_MANAGER} from "@nestjs/cache-manager";
 import {Cache} from 'cache-manager';
 import {v4 as uuid} from 'uuid';
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 import {Tokens} from "./types/tokens.type";
 import {RequestRecoveryDto} from "./dto/request-recovery.dto";
 import {RecoveryDto} from "./dto/recovery.dto";
@@ -142,7 +142,7 @@ export class AuthService {
     }
 
     async getUserName(user_id: string) {
-        const userName = await this.usersService.findOneById(user_id);
+        const userName = (await this.usersService.findOneById(user_id)).user_name;
         return {
             userName
         };
@@ -194,34 +194,27 @@ export class AuthService {
 
     public async requestRecovery(dto: RequestRecoveryDto, res: Response) {
         const { email } = dto;
-        const user = this.usersService.findOneByEmail(email);
+        const user = await this.usersService.findOneByEmail(email);
         if (!user) {
             throw new NotFoundException('There is no account with such email');
         }
-
-        this.recoveryQueue.on('failed', (_, error) => {
-            throw new HttpException(error.message, HttpStatus.TOO_MANY_REQUESTS);
-        })
-
-        const job = await this.recoveryQueue.add({
-            email,
-        });
-
-        job.finished().then(async () => {
+        try {
+            const job = await this.recoveryQueue.add({ email, });
+            const result = await job.finished();
             const token = uuid();
-            await this.cacheManager.set(token, email, 120 * 1000);
-
+            await this.cacheManager.set(token, email, 15 * 60 * 1000);
             await this.sendRecoverEmail(email, token);
             res.status(HttpStatus.OK).json({
                 statusCode: HttpStatus.OK,
                 message: 'Recover email has been sent',
             });
-        }).catch(_ => {
+        } catch (error) {
+            console.error(error);
             res.status(HttpStatus.TOO_MANY_REQUESTS).json({
                 statusCode: HttpStatus.TOO_MANY_REQUESTS,
                 message: 'Suspicious activity has been detected. Please try again later',
             });
-        });
+        }
     }
 
     private async sendRecoverEmail(email: string, token: string) {
@@ -233,7 +226,7 @@ export class AuthService {
             }
         });
 
-        const resetLink = this.config.get<string>('API_URL') + `/reset-password?token=${token}`;
+        const resetLink = this.config.get<string>('API_URL') + `/auth/reset-password?token=${token}`;
 
         await transporter.sendMail({
             from: '"Studsolver administration" <studsolver@gmail.com>',
@@ -249,7 +242,7 @@ export class AuthService {
     public async getResetPage(dto: RecoveryDto, res: Response) {
         const { token } = dto;
 
-        res.redirect(this.config.get<string>('CLIENT_URL') + `/?token=${token}`);
+        res.redirect(this.config.get<string>('CLIENT_URL') + `?token=${token}`);
     }
 
     public async resetPassword(dto: ResetDto, res: Response) {

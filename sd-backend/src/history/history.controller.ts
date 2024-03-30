@@ -29,11 +29,11 @@ export class HistoryController {
     constructor(private historyService: HistoryService) {
     }
 
-    @Get('solution/:id')
+    @Get('solution/main/:id')
     @ApiResponse({description: 'picture'})
     async getSolution(@Param('id') id: string, @Res() res: Response, @Req() req: Request) {
         const user = req.user as JwtPayload;
-        const downloadData = await this.historyService.getSolution(id, user.sub);
+        const downloadData = await this.historyService.getSolution(true, id, user.sub);
         res.set(downloadData.headers).send(downloadData.file);
     }
 
@@ -46,7 +46,7 @@ export class HistoryController {
     ) {
         const user = req.user as JwtPayload;
         const { solutionId, format } = query;
-        const downloadData = await this.historyService.getSolution(solutionId, user.sub, format);
+        const downloadData = await this.historyService.getSolution(false, solutionId, user.sub, format);
         res.set(downloadData.headers).send(downloadData.file);
     }
 
@@ -61,11 +61,12 @@ export class HistoryController {
     @Post('report')
     @ApiResponse({description: 'download pdf'})
     async getReport(
-        @Body(new ParseArrayPipe({items: SolutionIdDto})) solutionIdArray: string[],
+        @Body() dto: SolutionIdDto,
         @Req() req: Request,
         @Res() res: Response,
     ) {
         const user = req.user as JwtPayload;
+        const solutionIdArray = dto.solution_id;
         const downloadData = await this.historyService.getReport(solutionIdArray, user.sub);
         res.set(downloadData.headers).send(downloadData.file);
     }

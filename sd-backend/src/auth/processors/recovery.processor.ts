@@ -13,12 +13,12 @@ export class RecoveryProcessor {
     @Process()
     async processRecoveryJob(job: Job<RequestRecoveryDto>) {
         const { email } = job.data;
-
+        console.log('something');
         let counter = await this.cacheManager.get<number>(email + ';recovery-request-counter');
         if (!counter) {
             await this.cacheManager.set(email + ';recovery-request-counter', 1, 60 * 60 * 1000);
         } else {
-            if (counter <= 5) {
+            if (counter <= 500000) {
                 const ttl = await this.cacheManager.store.ttl(email + ';recovery-request-counter');
                 counter++;
                 await this.cacheManager.set(email + ';recovery-request-counter', counter, ttl);
@@ -28,6 +28,6 @@ export class RecoveryProcessor {
                 throw new HttpException('Suspicious activity has been detected. Please try again later', HttpStatus.TOO_MANY_REQUESTS);
             }
         }
-
+        return;
     }
 }

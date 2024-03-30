@@ -28,9 +28,6 @@ import {ThrottlerStorageRedisService} from "nestjs-throttler-storage-redis";
       isGlobal: true,
       envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'sd-client'),
-    }),
     CacheModule.register({
       isGlobal: true,
       store: redisStore,

@@ -1,8 +1,10 @@
-import {IsUUID} from "class-validator";
+import {ArrayMinSize, IsArray, IsUUID} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class SolutionIdDto {
     @ApiProperty()
-    @IsUUID()
-    public solution_id: string;
+    @IsArray()
+    @IsUUID(4, {each: true})
+    @ArrayMinSize(1)
+    public solution_id: string[];
 }

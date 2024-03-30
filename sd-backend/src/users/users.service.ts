@@ -6,15 +6,16 @@ export class UsersService {
     constructor(private prisma: PrismaService) {}
 
     async create(email: string, passwordHash: string, userName: string) {
-        const isEmail = !!(await this.prisma.user.findUnique({where: {email}}));
-        const isUsername = !!(await this.prisma.user.findUnique({where: {user_name: userName}}));
-        if (!isEmail || !isUsername) {
-            if (!isEmail) {
-                throw new ForbiddenException('email is not unique');
-            } else {
-                throw new ForbiddenException('username is not unique')
-            }
+        const isEmail = !!(await this.prisma.user.findUnique({ where: { email } }));
+        const isUsername = !!(await this.prisma.user.findUnique({ where: { user_name: userName } }));
+
+        if (isEmail) {
+            throw new ForbiddenException('Email is already in use.');
         }
+        if (isUsername) {
+            throw new ForbiddenException('Username is already taken.');
+        }
+
         return this.prisma.user.create({
             data: {
                 email,
@@ -23,6 +24,7 @@ export class UsersService {
             }
         });
     }
+
 
     async findOneByEmail(email: string) {
         return this.prisma.user.findUnique({where: {email}});

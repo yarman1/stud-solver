@@ -20,8 +20,9 @@ def parse_limit(limit_str):
 
 def validate_expression(expr_str):
     try:
+        corrected_expr_str = expr_str.replace("^", "**")
         # Parse and validate the expression
-        expr = parse_expr(expr_str, transformations=transformations)
+        expr = parse_expr(corrected_expr_str, transformations=transformations)
         return expr
     except Exception as e:
         raise ValueError(f"Invalid expression: {expr_str}. Error: {str(e)}")

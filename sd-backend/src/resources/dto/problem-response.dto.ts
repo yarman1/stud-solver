@@ -18,4 +18,7 @@ export class ProblemResponseDto {
 
     @ApiProperty()
     broad_description_url: string;
+
+    @ApiProperty()
+    area_id: number;
 }

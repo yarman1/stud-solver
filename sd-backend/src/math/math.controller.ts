@@ -39,7 +39,7 @@ export class MathController {
         await this.mathService.handleSolution(dto, result, req, res, Operations.INDEFINITE_INTEGRAL);
     }
 
-    @Throttle({ default: { limit: 1, ttl: 60 * 1000 } })
+    // @Throttle({ default: { limit: 1, ttl: 60 * 1000 } })
     @Post(Operations.DEFINITE_INTEGRAL)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({description: 'solution_id if signed in; picture if not signed in'})

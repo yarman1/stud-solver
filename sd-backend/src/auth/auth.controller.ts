@@ -58,12 +58,12 @@ export class AuthController {
     res.cookie('refreshToken', refresh_token, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
     res.cookie('deviceId', device_id, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
     res.json({ access_token });
   }
@@ -99,18 +99,19 @@ export class AuthController {
     res.clearCookie('refreshToken', {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
     res.clearCookie('deviceId', {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
     return res.json({
       message: 'Logging out successful',
     });
   }
 
+  @Public()
   @UseGuards(RtGuard)
   @Get('refresh')
   @HttpCode(HttpStatus.OK)
@@ -126,12 +127,12 @@ export class AuthController {
     res.cookie('refreshToken', refresh_token, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
     res.cookie('deviceId', device_id, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
 
     res.json({ access_token });
@@ -146,12 +147,12 @@ export class AuthController {
     res.clearCookie('refreshToken', {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
     res.clearCookie('deviceId', {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
     res.json(message);
   }
@@ -169,20 +170,20 @@ export class AuthController {
     res.cookie('refreshToken', data.newTokens.refresh_token, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
     res.cookie('deviceId', data.newTokens.device_id, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: 'lax',
     });
     res.json(data.message);
   }
 
   @Public()
   @UseInterceptors(BlockCheckInterceptor)
-  @UseGuards(RecoveryThrottlerGuard)
-  @Throttle({ short: { limit: 1, ttl: 15 * 60 * 1000 }, medium: { limit: 5, ttl: 2 * 60 * 60 * 1000 } })
+  // @UseGuards(RecoveryThrottlerGuard)
+  // @Throttle({ short: { limit: 1, ttl: 15 * 60 * 1000 }, medium: { limit: 5, ttl: 2 * 60 * 60 * 1000 } })
   @Post('recovery')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({ type: ResponseStatusCodeDto })

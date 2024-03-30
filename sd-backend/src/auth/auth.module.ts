@@ -7,10 +7,11 @@ import {JwtModule} from "@nestjs/jwt";
 import {AtStrategy} from "./strategies/at.strategy";
 import {RtStrategy} from "./strategies/rt.strategy";
 import {BullModule} from "@nestjs/bull";
+import {RecoveryProcessor} from "./processors/recovery.processor";
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, AtStrategy, RtStrategy],
+  providers: [AuthService, AtStrategy, RtStrategy, RecoveryProcessor],
   imports : [
       PrismaModule,
       UsersModule,

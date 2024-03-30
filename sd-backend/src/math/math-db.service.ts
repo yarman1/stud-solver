@@ -12,7 +12,8 @@ export class MathDbService {
             problem_id: problem.problem_id,
             result_html: resultHtml
         };
-
-        return this.prisma.solution.create({data});
+        const solution = await this.prisma.solution.create({data});
+        const { solution_id } = solution;
+        return solution_id;
     }
 }
