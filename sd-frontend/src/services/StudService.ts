@@ -279,6 +279,11 @@ export const studAPI = createApi({
         url: "/history/report",
         method: "POST",
         responseHandler: async (res) => {
+          if (res.status == 400) {
+            const resJson = await res.json();
+            console.log(resJson.message);
+            return;
+          }
           const blob = await res.blob();
           let file = window.URL.createObjectURL(blob);
           const link = document.createElement("a");
@@ -286,7 +291,7 @@ export const studAPI = createApi({
           link.setAttribute("download", `report.pdf`);
           document.body.appendChild(link);
           link.click();
-          return file;
+          return;
         },
         body,
       }),

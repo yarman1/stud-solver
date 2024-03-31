@@ -1,4 +1,4 @@
-import {ForbiddenException, Injectable} from '@nestjs/common';
+import {BadRequestException, ForbiddenException, Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {FileHandlerService} from "../file-handler/file-handler.service";
 import {MAIN_TYPE} from "../common/constants/main-type.constant";
@@ -64,10 +64,11 @@ export class HistoryService {
         for (const solutionId of solutionIdArray){
             const solution = await this.prismaService.solution.findUnique({where: {solution_id: solutionId}});
             if (!solution) {
-                continue;
+                throw new BadRequestException('One of the solutions does not exist');
             }
             htmlContentArray.push(solution.result_html);
         }
+
         return await this.fileHandlerService.createReport(htmlContentArray, user.user_name);
     }
 }
