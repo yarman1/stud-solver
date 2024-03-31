@@ -199,7 +199,9 @@ export class AuthService {
             throw new NotFoundException('There is no account with such email');
         }
         try {
-            const job = await this.recoveryQueue.add({ email, });
+            const job = await this.recoveryQueue.add({ email }, {
+                removeOnFail: true,
+            });
             const result = await job.finished();
             const token = uuid();
             await this.cacheManager.set(token, email, 15 * 60 * 1000);
@@ -229,7 +231,7 @@ export class AuthService {
         const resetLink = this.config.get<string>('API_URL') + `/auth/reset-password?token=${token}`;
 
         await transporter.sendMail({
-            from: '"Studsolver administration" <studsolver@gmail.com>',
+            from: '"StudSolver administration" <studsolver@gmail.com>',
             to: email,
             subject: 'Password reset request',
             html: `

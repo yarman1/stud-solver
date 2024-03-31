@@ -67,6 +67,7 @@
     "@nestjs/schematics": "^10.1.1",
     "@nestjs/testing": "^10.3.4",
     "@types/bcrypt": "^5.0.2",
+    "@types/bull": "^4.10.0",
     "@types/cache-manager": "^4.0.6",
     "@types/cookie-parser": "^1.4.7",
     "@types/cookie-session": "^2.0.48",
