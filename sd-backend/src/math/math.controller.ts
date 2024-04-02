@@ -1,19 +1,20 @@
-import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
+import {Body, Controller, HttpCode, HttpStatus, Post, Query, Req, Res, UseGuards} from '@nestjs/common';
 import {Public} from "../common/decorators/public.decorator";
-import {IndefiniteIntegralDto} from "./dto/indefinite-integral.dto";
+import {IndefiniteIntegralDto} from "./dto/operations-dto/indefinite-integral.dto";
 import {MathService} from "./math.service";
-import {DefiniteIntegralDto} from "./dto/definite-integral.dto";
+import {DefiniteIntegralDto} from "./dto/operations-dto/definite-integral.dto";
 import {json, Request, Response} from "Express";
 import {CustomRequest} from "../types/custom-request.type";
 import {MathDbService} from "./math-db.service";
 import {FileHandlerService} from "../file-handler/file-handler.service";
-import {Operations} from "../common/constants/operations.constants";
+import {Operations} from "../common/types/operations.type";
 import {MAIN_TYPE} from "../common/constants/main-type.constant";
 import {ResultDto} from "./dto/result.dto";
 import {TaskDto} from "./dto/task.dto";
 import {JwtPayload} from "../auth/types/jwtPayload.type";
 import {Throttle} from "@nestjs/throttler";
 import {ApiResponse} from "@nestjs/swagger";
+import {OperationNameDto} from "./dto/operation-name.dto";
 
 @Public()
 @Controller('math')
@@ -22,38 +23,50 @@ export class MathController {
         private readonly mathService: MathService,
     ) {}
 
-    @Post(Operations.INDEFINITE_INTEGRAL)
-    @HttpCode(HttpStatus.OK)
-    @ApiResponse({description: 'solution_id if signed in; picture if not signed in'})
-    async indefiniteIntegral(
-        @Body() dto: IndefiniteIntegralDto,
-        @Req() req: CustomRequest,
-        @Res() res: Response
-    ) {
-        let result = null;
-        try {
-            result = await this.mathService.computeIntegralIndefinite(dto);
-        } catch (e) {
-            res.status(HttpStatus.BAD_REQUEST).json({message: 'Bad input'});
-        }
-        await this.mathService.handleSolution(dto, result, req, res, Operations.INDEFINITE_INTEGRAL);
-    }
+    // @Post(Operations.INDEFINITE_INTEGRAL)
+    // @HttpCode(HttpStatus.OK)
+    // @ApiResponse({description: 'solution_id if signed in; picture if not signed in'})
+    // async indefiniteIntegral(
+    //     @Body() dto: IndefiniteIntegralDto,
+    //     @Req() req: CustomRequest,
+    //     @Res() res: Response
+    // ) {
+    //     let result = null;
+    //     try {
+    //         result = await this.mathService.computeIntegralIndefinite(dto);
+    //     } catch (e) {
+    //         res.status(HttpStatus.BAD_REQUEST).json({message: 'Bad input'});
+    //     }
+    //     await this.mathService.handleSolution(dto, result, req, res, Operations.INDEFINITE_INTEGRAL);
+    // }
+    //
+    // // @Throttle({ default: { limit: 1, ttl: 60 * 1000 } })
+    // @Post(Operations.DEFINITE_INTEGRAL)
+    // @HttpCode(HttpStatus.OK)
+    // @ApiResponse({description: 'solution_id if signed in; picture if not signed in'})
+    // async definiteIntegral(
+    //     @Body() dto: DefiniteIntegralDto,
+    //     @Req() req: CustomRequest,
+    //     @Res() res: Response
+    // ) {
+    //     let result: ResultDto = null;
+    //     try {
+    //         result = await this.mathService.computeIntegralDefinite(dto);
+    //     } catch (e) {
+    //         res.status(HttpStatus.BAD_REQUEST).json({message: 'Bad input'});
+    //     }
+    //     await this.mathService.handleSolution(dto, result, req, res, Operations.DEFINITE_INTEGRAL);
+    // }
 
-    // @Throttle({ default: { limit: 1, ttl: 60 * 1000 } })
-    @Post(Operations.DEFINITE_INTEGRAL)
+    @Post()
     @HttpCode(HttpStatus.OK)
     @ApiResponse({description: 'solution_id if signed in; picture if not signed in'})
-    async definiteIntegral(
-        @Body() dto: DefiniteIntegralDto,
+    async solveProblem(
+        @Query() operationNameDto: OperationNameDto,
+        @Body() operationDto: any,
         @Req() req: CustomRequest,
         @Res() res: Response
     ) {
-        let result: ResultDto = null;
-        try {
-            result = await this.mathService.computeIntegralDefinite(dto);
-        } catch (e) {
-            res.status(HttpStatus.BAD_REQUEST).json({message: 'Bad input'});
-        }
-        await this.mathService.handleSolution(dto, result, req, res, Operations.DEFINITE_INTEGRAL);
+        await this.mathService.handleSolution(operationDto, req, res, operationNameDto.operationName)
     }
 }

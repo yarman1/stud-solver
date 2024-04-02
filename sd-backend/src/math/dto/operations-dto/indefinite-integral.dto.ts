@@ -1,4 +1,4 @@
-import {TaskDto} from "./task.dto";
+import {TaskDto} from "../task.dto";
 
 export class IndefiniteIntegralDto extends TaskDto{
 

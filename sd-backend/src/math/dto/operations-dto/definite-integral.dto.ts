@@ -1,5 +1,5 @@
 import {IsBoolean, IsBooleanString, IsNotEmpty, IsString} from "class-validator";
-import {TaskDto} from "./task.dto";
+import {TaskDto} from "../task.dto";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class DefiniteIntegralDto extends TaskDto{

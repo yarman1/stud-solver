@@ -1,6 +1,6 @@
-import {Injectable} from '@nestjs/common';
-import {IndefiniteIntegralDto} from "./dto/indefinite-integral.dto";
-import {DefiniteIntegralDto} from "./dto/definite-integral.dto";
+import {BadRequestException, Injectable} from '@nestjs/common';
+import {IndefiniteIntegralDto} from "./dto/operations-dto/indefinite-integral.dto";
+import {DefiniteIntegralDto} from "./dto/operations-dto/definite-integral.dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {TaskDto} from "./dto/task.dto";
 import * as ejs from "ejs";
@@ -17,6 +17,10 @@ import {JwtPayload} from "../auth/types/jwtPayload.type";
 import {MAIN_TYPE} from "../common/constants/main-type.constant";
 import {FileHandlerService} from "../file-handler/file-handler.service";
 import {MathDbService} from "./math-db.service";
+import {plainToInstance} from "class-transformer";
+import {validate} from "class-validator";
+import {dtoMapping} from "./constants/dto-mapping";
+import {Operations} from "../common/types/operations.type";
 
 const readFile = promisify(fs.readFile);
 
@@ -31,6 +35,7 @@ export class MathService {
     }
 
     async computeIntegralIndefinite(dto: IndefiniteIntegralDto): Promise<ResultDto> {
+        console.log(this.configService)
         try {
             const response: AxiosResponse<ResultDto> = await axios.post(this.configService.get<string>('PYTHON_SERVER_URL') + "/solve-integral",{
                 ...dto
@@ -51,6 +56,15 @@ export class MathService {
         } catch (error) {
             console.error('Error calling Flask server for definite integral: ', error);
             throw new Error('Failed to compute definite integral');
+        }
+    }
+
+    getHandlerByOperationName(operationName: Operations) {
+        switch(operationName) {
+            case Operations.DEFINITE_INTEGRAL:
+                return this.computeIntegralDefinite.bind(this);
+            case Operations.INDEFINITE_INTEGRAL:
+                return this.computeIntegralIndefinite.bind(this);
         }
     }
 
@@ -87,7 +101,26 @@ export class MathService {
         };
     }
 
-    async handleSolution(dto: TaskDto, result: ResultDto, req: CustomRequest, res: Response, operation_name: string) {
+    async handleSolution(dto: TaskDto, req: CustomRequest, res: Response, operation_name: Operations) {
+        const problemDto = dtoMapping[operation_name];
+
+        const dtoInstance = plainToInstance(problemDto, dto);
+        const errors = await validate(dtoInstance);
+        if (errors.length > 0) {
+            const errorsDescription = [];
+            for (const errorTarget of errors) {
+                const constraints = errorTarget.constraints;
+                const constraintsKeys = Object.keys(constraints);
+                for (const key of constraintsKeys) {
+                    errorsDescription.push(constraints[key]);
+                }
+            }
+            throw new BadRequestException({ error: 'Bad request', message: errorsDescription });
+        }
+
+        const handler = this.getHandlerByOperationName(operation_name) as (dto: TaskDto) => Promise<ResultDto>;
+        const result = await handler(dto);
+
         const resultTransformed = await this.transformSolution(result, dto, operation_name);
         if (req.user) {
             const user: JwtPayload = req.user as JwtPayload;
