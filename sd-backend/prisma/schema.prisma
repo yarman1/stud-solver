@@ -36,6 +36,7 @@ model Problem {
   picture_url           String
   description           String
   broad_description_url String
+  input_schema          String
   Area                  Area       @relation(fields: [area_id], references: [area_id], onDelete: Cascade)
   solutions             Solution[]
 

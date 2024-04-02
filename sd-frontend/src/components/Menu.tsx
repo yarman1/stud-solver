@@ -18,6 +18,7 @@ const Menu: FC<MenuProps> = ({}) => {
     localStorage.removeItem("token");
     dispatch(UserSlice.actions.update_logged(false));
     dispatch(UserSlice.actions.update_token(""));
+    window.location.href = '/';
   };
 
   return (

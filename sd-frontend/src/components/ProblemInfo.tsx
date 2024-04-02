@@ -19,15 +19,17 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
   const navigate = useNavigate();
   const { isLogged } = useAppSelector((state) => state.UserReducer);
 
-  const formOptions: IProblemOptions = {
-    "indef-int": [{ key: "expression", placeholder: "Expression" }],
-    "def-int": [
-      { key: "expression", placeholder: "Expression" },
-      { key: "lowerLimit", placeholder: "Lower limit" },
-      { key: "upperLimit", placeholder: "Upper limit" },
-      { key: "isDecimal", placeholder: "Is decimal", type: "checkbox" },
-    ],
-  };
+  const formOptions: IProblemFormOption[] = JSON.parse(problem.input_schema);
+
+  // const formOptions: IProblemOptions = {
+  //   "indef-int": [{ key: "expression", placeholder: "Expression" }],
+  //   "def-int": [
+  //     { key: "expression", placeholder: "Expression" },
+  //     { key: "lowerLimit", placeholder: "Lower limit" },
+  //     { key: "upperLimit", placeholder: "Upper limit" },
+  //     { key: "isDecimal", placeholder: "Is decimal", type: "checkbox" },
+  //   ],
+  // };
 
   const handleSubmit = (input: TInput) => {
     const type = problem.operation_name;
@@ -70,7 +72,7 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
               <div>Formatted:</div>
               <div className="flex mt-4">
                 <ProblemForm
-                  formOptions={formOptions[problem.operation_name]}
+                  formOptions={formOptions}
                   handleSubmit={handleSubmit}
                   buttonLabel="Solve"
                 />

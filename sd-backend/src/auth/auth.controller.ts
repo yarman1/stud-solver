@@ -122,7 +122,7 @@ export class AuthController {
       @User('refreshToken') rt: string,
       @Res() res: Response
   ) {
-    const { access_token, refresh_token, device_id} = await this.authService.refresh(user_id, rt, deviceId);
+    const { access_token, refresh_token, device_id} = await this.authService.refresh(user_id, rt, deviceId, res);
 
     res.cookie('refreshToken', refresh_token, {
       httpOnly: true,

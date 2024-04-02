@@ -103,11 +103,26 @@ export class AuthService {
         };
     }
 
-    async refresh(user_id: string, rt: string, deviceId: string): Promise<Tokens> {
+    async refresh(user_id: string, rt: string, deviceId: string, res: Response): Promise<Tokens> {
         const user = await this.usersService.findOneById(user_id);
 
         const hashedRt: string = await this.cacheManager.get(user_id + ';dev-id=' + deviceId);
-        if (!user || !hashedRt) throw new ForbiddenException('Access Denied');
+        if (!user || !hashedRt) {
+            if (hashedRt) {
+                await this.cacheManager.del(user_id + ';dev-id=' + deviceId);
+            }
+            res.clearCookie('refreshToken', {
+                httpOnly: true,
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                sameSite: 'lax',
+            });
+            res.clearCookie('deviceId', {
+                httpOnly: true,
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                sameSite: 'lax',
+            });
+            throw new ForbiddenException('Access Denied');
+        }
 
         const [storedHash, salt] = hashedRt.split(';salt=');
 

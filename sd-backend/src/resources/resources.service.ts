@@ -60,6 +60,7 @@ export class ResourcesService {
             description: problem.description,
             broad_description_url: problem.broad_description_url,
             area_id: problem.area_id,
+            input_schema: problem.input_schema,
         }
     }
 

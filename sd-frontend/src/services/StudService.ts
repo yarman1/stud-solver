@@ -81,6 +81,7 @@ export interface IProblemRes {
   picture_url: string;
   description: string;
   broad_description_url: string;
+  input_schema: string;
 }
 
 interface ISolutionFileReq {
@@ -139,6 +140,10 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
       result = await baseQuery(args, api, extraOptions);
     } else {
       // api.dispatch(loggedOut())
+      localStorage.removeItem("token");
+      api.dispatch(UserSlice.actions.update_logged(false));
+      api.dispatch(UserSlice.actions.update_token(""));
+      window.location.href = '/';
     }
   }
   return result;
@@ -217,7 +222,7 @@ export const studAPI = createApi({
     }),
     math: build.mutation<IMathRes, IMathReq>({
       query: (body) => ({
-        url: `/math/${body.type}`,
+        url: `/math?operationName=${body.type}`,
         method: "POST",
         body: body.body,
         responseHandler: async (res) => {
