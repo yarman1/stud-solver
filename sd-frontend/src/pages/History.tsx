@@ -3,12 +3,16 @@ import TopNavbar from "../components/TopNavbar";
 import { studAPI } from "../services/StudService";
 import HistoryFilter from "../components/HistoryFilter";
 import HistoryItem from "../components/HistoryItem";
+import {useSelector} from "react-redux";
+import {RootState} from "../store/store";
+import HintBlock from "../components/HintBlock";
 
 interface HistoryProps {}
 
 const History: FC<HistoryProps> = ({}) => {
   const { data, isSuccess } = studAPI.useGetSolutionsQuery();
   const [generateReport, result] = studAPI.useReportHistoryMutation();
+  const errorMessage = useSelector((state: RootState) => state.UserReducer.errorMessage);
 
   const [solutionIDs, setSolutionIDs] = React.useState<string[]>([]);
 
@@ -92,6 +96,7 @@ const History: FC<HistoryProps> = ({}) => {
           Generate report
         </div>
       </div>
+      {errorMessage && <HintBlock message={errorMessage} />}
     </div>
   );
 };

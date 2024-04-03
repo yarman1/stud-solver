@@ -6,10 +6,14 @@ import AccountForm from "../components/AccountForm";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux";
 import { UserSlice } from "../store/reducers/UserSlice";
+import {useSelector} from "react-redux";
+import {RootState} from "../store/store";
+import HintBlock from "../components/HintBlock";
 
 const Account = () => {
   const { data, error, isLoading } = studAPI.useGetUserQuery();
   const dispatch = useAppDispatch();
+  const errorMessage = useSelector((state: RootState) => state.UserReducer.errorMessage);
 
   const navigate = useNavigate();
 
@@ -91,6 +95,7 @@ const Account = () => {
           </div>
         </div>
       </div>
+      {errorMessage && <HintBlock message={errorMessage} />}
     </div>
   );
 };

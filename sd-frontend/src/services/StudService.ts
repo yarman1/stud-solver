@@ -124,6 +124,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   api,
   extraOptions
 ) => {
+  api.dispatch(UserSlice.actions.updateErrorMessage(""));
   let result = await baseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401) {
     // try to get a new token
@@ -145,6 +146,21 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
       api.dispatch(UserSlice.actions.update_token(""));
       window.location.href = '/';
     }
+  }
+  if (result.error) {
+    // @ts-ignore
+    const errorData = result.error.data as any;
+    let errorMessage = '';
+    if (errorData.message) {
+      if (Array.isArray(errorData.message)) {
+        errorMessage = errorData.message.join('\n');
+      } else {
+        errorMessage = errorData.message;
+      }
+    } else if(errorData.description) {
+      errorMessage = errorData.description;
+    }
+    api.dispatch(UserSlice.actions.updateErrorMessage(errorMessage));
   }
   return result;
 };

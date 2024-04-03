@@ -4,6 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import SignIn from "../components/SignIn";
 import SignUp from "../components/SignUp";
 import Recovery from "../components/Recovery";
+import {useSelector} from "react-redux";
+import {RootState} from "../store/store";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
+import HintBlock from "../components/HintBlock";
 
 type TCurrentPage = "signin" | "signup" | "recovery";
 
@@ -12,6 +17,8 @@ interface AuthorizationProps {}
 const Authorization: FC<AuthorizationProps> = ({}) => {
   const { type } = useParams<{ type: TCurrentPage }>();
   const navigate = useNavigate();
+
+  const errorMessage = useSelector((state: RootState) => state.UserReducer.errorMessage);
 
   return (
     <div className="w-[24rem] h-full flex items-center flex-col justify-center m-auto">
@@ -36,6 +43,7 @@ const Authorization: FC<AuthorizationProps> = ({}) => {
           }
         })()}
       </div>
+        {errorMessage && <HintBlock message={errorMessage} />}
     </div>
   );
 };

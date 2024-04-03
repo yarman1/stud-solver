@@ -1,4 +1,7 @@
 import React, { FC } from "react";
+import {useSelector} from "react-redux";
+import {RootState} from "../store/store";
+import HintBlock from "./HintBlock";
 
 export type TInput = { [key: string]: string | boolean };
 
@@ -16,6 +19,7 @@ interface ProblemFormProps {
 
 const ProblemForm: FC<ProblemFormProps> = ({ formOptions, handleSubmit, buttonLabel }) => {
   const [input, setInput] = React.useState<TInput>({});
+    const errorMessage = useSelector((state: RootState) => state.UserReducer.errorMessage);
 
   const handleChange = (key: string, value: string | boolean) => {
     setInput((prev) => ({ ...prev, [key]: value }));
@@ -46,6 +50,7 @@ const ProblemForm: FC<ProblemFormProps> = ({ formOptions, handleSubmit, buttonLa
       >
         {buttonLabel}
       </div>
+        {errorMessage && <HintBlock message={errorMessage} />}
     </div>
   );
 };

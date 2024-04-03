@@ -19,6 +19,7 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
   const navigate = useNavigate();
   const { isLogged } = useAppSelector((state) => state.UserReducer);
 
+  console.log(problem.input_schema);
   const formOptions: IProblemFormOption[] = JSON.parse(problem.input_schema);
 
   // const formOptions: IProblemOptions = {

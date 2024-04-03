@@ -52,6 +52,7 @@ export class ResourcesService {
 
     async getProblem(id: number) {
         const problem = await this.prismaService.problem.findUnique({where: {problem_id: id}});
+        const transformedSchema = problem.input_schema.replace(/(\w+):([^,}]+)/g, '"$1":"$2"');
         return {
             problem_id: problem.problem_id,
             name: problem.name,
@@ -60,7 +61,7 @@ export class ResourcesService {
             description: problem.description,
             broad_description_url: problem.broad_description_url,
             area_id: problem.area_id,
-            input_schema: problem.input_schema,
+            input_schema: transformedSchema,
         }
     }
 

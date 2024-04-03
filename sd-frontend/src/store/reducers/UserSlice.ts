@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface IUser {
   isLogged: boolean;
   access_token: string;
+  errorMessage: string;
 }
 
 export const initialState: IUser = {
   isLogged: false,
   access_token: "",
+  errorMessage: "",
 };
 
 export const UserSlice = createSlice({
@@ -20,6 +22,9 @@ export const UserSlice = createSlice({
     update_token(state, action: PayloadAction<string>) {
       state.access_token = action.payload;
     },
+    updateErrorMessage(state, action: PayloadAction<string>) {
+      state.errorMessage = action.payload;
+    }
   },
 });
 
