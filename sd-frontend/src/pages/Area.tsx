@@ -4,12 +4,18 @@ import { useParams } from "react-router-dom";
 import TopNavbar from "../components/TopNavbar";
 import AreaInfo from "../components/AreaInfo";
 import Problems from "../components/Problems";
+import {useAppDispatch} from "../hooks/redux";
+import {UserSlice} from "../store/reducers/UserSlice";
 
 interface AreaProps {}
 
 const Area: FC<AreaProps> = ({}) => {
   const { id } = useParams<{ id: string }>();
   const { data: area, isLoading, isSuccess } = studAPI.useGetAreaQuery({ id: id || "" });
+  const dispatch = useAppDispatch();
+
+  dispatch(UserSlice.actions.updateBackLink("/"));
+  dispatch(UserSlice.actions.update_reset(false));
 
   React.useEffect(() => {
     console.log(area);

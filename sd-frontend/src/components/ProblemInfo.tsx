@@ -2,8 +2,9 @@ import React, { FC } from "react";
 import { IMathDefReq, IMathIndefReq, IProblemRes, studAPI } from "../services/StudService";
 import ProblemForm, { IProblemFormOption } from "./ProblemForm";
 import { TInput } from "./ProblemForm";
-import { useAppSelector } from "../hooks/redux";
+import {useAppDispatch, useAppSelector} from "../hooks/redux";
 import { useNavigate } from "react-router-dom";
+import {UserSlice} from "../store/reducers/UserSlice";
 
 interface ProblemInfoProps {
   problem: IProblemRes;
@@ -18,19 +19,17 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
   const [math, result] = studAPI.useMathMutation();
   const navigate = useNavigate();
   const { isLogged } = useAppSelector((state) => state.UserReducer);
+  const dispatch = useAppDispatch();
 
-  console.log(problem.input_schema);
   const formOptions: IProblemFormOption[] = JSON.parse(problem.input_schema);
 
-  // const formOptions: IProblemOptions = {
-  //   "indef-int": [{ key: "expression", placeholder: "Expression" }],
-  //   "def-int": [
-  //     { key: "expression", placeholder: "Expression" },
-  //     { key: "lowerLimit", placeholder: "Lower limit" },
-  //     { key: "upperLimit", placeholder: "Upper limit" },
-  //     { key: "isDecimal", placeholder: "Is decimal", type: "checkbox" },
-  //   ],
-  // };
+  if (result.isSuccess) {
+    dispatch(UserSlice.actions.update_reset(true));
+    dispatch(UserSlice.actions.updateBackLink(`/problem/${problem.problem_id}`));
+  } else {
+    dispatch(UserSlice.actions.update_reset(false));
+    dispatch(UserSlice.actions.updateBackLink(`/area/${problem.area_id}`));
+  }
 
   const handleSubmit = (input: TInput) => {
     const type = problem.operation_name;

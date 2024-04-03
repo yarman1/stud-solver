@@ -6,6 +6,8 @@ import HistoryItem from "../components/HistoryItem";
 import {useSelector} from "react-redux";
 import {RootState} from "../store/store";
 import HintBlock from "../components/HintBlock";
+import {useAppDispatch} from "../hooks/redux";
+import {UserSlice} from "../store/reducers/UserSlice";
 
 interface HistoryProps {}
 
@@ -13,6 +15,10 @@ const History: FC<HistoryProps> = ({}) => {
   const { data, isSuccess } = studAPI.useGetSolutionsQuery();
   const [generateReport, result] = studAPI.useReportHistoryMutation();
   const errorMessage = useSelector((state: RootState) => state.UserReducer.errorMessage);
+  const dispatch = useAppDispatch();
+
+  dispatch(UserSlice.actions.updateBackLink('/history'));
+  dispatch(UserSlice.actions.update_reset(false));
 
   const [solutionIDs, setSolutionIDs] = React.useState<string[]>([]);
 

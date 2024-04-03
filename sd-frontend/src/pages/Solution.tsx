@@ -1,7 +1,9 @@
 import React, { FC } from "react";
 import TopNavbar from "../components/TopNavbar";
 import { studAPI } from "../services/StudService";
-import { useNavigate, useParams } from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useAppDispatch} from "../hooks/redux";
+import {UserSlice} from "../store/reducers/UserSlice";
 
 type TFileFormat = "pdf" | "png" | "jpeg";
 
@@ -39,7 +41,7 @@ const Solution: FC<SolutionProps> = ({}) => {
 
   return (
     <div>
-      <TopNavbar />
+      <TopNavbar isBackButton />
       <div className="flex flex-col w-2/3 max-w-[1280px] mx-auto p-4 border border-2 border-black mt-4 rounded">
         <img src={data} />
         <div className="flex mt-4">

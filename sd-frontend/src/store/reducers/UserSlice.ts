@@ -4,12 +4,16 @@ interface IUser {
   isLogged: boolean;
   access_token: string;
   errorMessage: string;
+  backLink: string;
+  isReset: boolean;
 }
 
 export const initialState: IUser = {
   isLogged: false,
   access_token: "",
   errorMessage: "",
+  backLink: "",
+  isReset: false,
 };
 
 export const UserSlice = createSlice({
@@ -24,6 +28,12 @@ export const UserSlice = createSlice({
     },
     updateErrorMessage(state, action: PayloadAction<string>) {
       state.errorMessage = action.payload;
+    },
+    updateBackLink(state, action: PayloadAction<string>) {
+      state.backLink = action.payload;
+    },
+    update_reset(state, action: PayloadAction<boolean>) {
+      state.isReset = action.payload;
     }
   },
 });
