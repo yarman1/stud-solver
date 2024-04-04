@@ -24,7 +24,11 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
   const formOptions: IProblemFormOption[] = JSON.parse(problem.input_schema);
 
   if (result.isSuccess) {
-    dispatch(UserSlice.actions.update_reset(true));
+    if (typeof result.data !== "string" && result.data.solution_id) {
+      dispatch(UserSlice.actions.update_reset(false));
+    } else {
+      dispatch(UserSlice.actions.update_reset(true));
+    }
     dispatch(UserSlice.actions.updateBackLink(`/problem/${problem.problem_id}`));
   } else {
     dispatch(UserSlice.actions.update_reset(false));
@@ -56,7 +60,7 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
     <div className="flex flex-col items-center mt-8 p-4">
       <div className="text-2xl mb-8">{problem.name}</div>
       <div className="flex items-center">
-        <div className="flex flex-col p-8 w-1/2 border border-1 border-black rounded items-center">
+        <div className={`flex flex-col p-8 w-1/2 ${result.isSuccess ? 'w-full' : 'w-1/2'} border border-1 border-black rounded items-center`}>
           {result.isSuccess && typeof result.data === "string" ? (
             <div>
               <img src={result.data} />
@@ -79,7 +83,15 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
             </>
           )}
         </div>
-        <div className="w-1/2 p-4">{problem.description}</div>
+        {!result.isSuccess ?
+          (
+              <div className="w-1/2 p-4">
+                <div>{problem.description}</div>
+                <div><a className="text-gray-400" href={problem.broad_description_url} target="_blank">Read more...</a></div>
+              </div>
+          ) :
+          ('')
+        }
       </div>
     </div>
   );

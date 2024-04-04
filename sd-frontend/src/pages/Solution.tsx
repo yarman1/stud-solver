@@ -42,7 +42,7 @@ const Solution: FC<SolutionProps> = ({}) => {
   return (
     <div>
       <TopNavbar isBackButton />
-      <div className="flex flex-col w-2/3 max-w-[1280px] mx-auto p-4 border border-2 border-black mt-4 rounded">
+      <div className="flex flex-col w-5/12 max-w-[1280px] mx-auto p-4 border border-2 border-black mt-4 rounded">
         <img src={data} />
         <div className="flex mt-4">
           {buttonOptions.map((option, index) => (
