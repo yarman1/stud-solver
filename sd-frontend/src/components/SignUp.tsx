@@ -1,8 +1,9 @@
-import React, { FC } from "react";
+import React, {FC, useState} from "react";
 import SignForm, { IFormOption, TInput } from "./SignForm";
 import { useAppDispatch } from "../hooks/redux";
 import { ISignUpReq, studAPI } from "../services/StudService";
 import { useNavigate } from "react-router-dom";
+import HintBlock from "./HintBlock";
 
 interface SignUpProps {
   handleHave: () => void;
@@ -11,6 +12,7 @@ interface SignUpProps {
 const SignUp: FC<SignUpProps> = ({ handleHave }) => {
   const [signUp, result] = studAPI.useSignUpMutation();
   const navigate = useNavigate();
+  const [isPasswordEqualityError, setPasswordEqualityError] = useState(false);
 
   const formOptions: IFormOption[] = [
     { key: "email", placeholder: "Email" },
@@ -21,7 +23,10 @@ const SignUp: FC<SignUpProps> = ({ handleHave }) => {
 
   const handleSubmit = (input: TInput) => {
     if (!formOptions.map((option) => option.key).every((key) => input[key] !== "")) return;
-    if (input.password !== input.repeat_password) return;
+    if (input.password !== input.repeat_password) {
+      setPasswordEqualityError(true);
+      return;
+    }
 
     signUp({
       email: input.email,
@@ -29,6 +34,10 @@ const SignUp: FC<SignUpProps> = ({ handleHave }) => {
       userName: input.username,
     });
     console.log(input);
+  };
+
+  const handleDismissError = () => {
+    setPasswordEqualityError(false);
   };
 
   React.useEffect(() => {
@@ -43,6 +52,7 @@ const SignUp: FC<SignUpProps> = ({ handleHave }) => {
       <div onClick={handleHave} className="flex mx-auto mt-4 cursor-pointer">
         Already have an account? Login
       </div>
+      {isPasswordEqualityError && <HintBlock message={"passwords are not equal"} onDismiss={handleDismissError} />}
     </div>
   );
 };

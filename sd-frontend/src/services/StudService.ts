@@ -153,7 +153,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
     let errorMessage = '';
     if (errorData.message) {
       if (Array.isArray(errorData.message)) {
-        errorMessage = errorData.message.join('\n');
+        errorMessage = errorData.message.filter((value: string, index: number, array: Array<string>) => array.indexOf(value) === index).join('\n');
       } else {
         errorMessage = errorData.message;
       }

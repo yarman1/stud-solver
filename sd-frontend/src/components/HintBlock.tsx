@@ -2,9 +2,10 @@ import React, { FC, useState, useEffect } from "react";
 
 interface HintBlockProps {
     message: string;
+    onDismiss?: () => void
 }
 
-const HintBlock: FC<HintBlockProps> = ({ message }) => {
+const HintBlock: FC<HintBlockProps> = ({ message, onDismiss }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [shouldDisplay, setShouldDisplay] = useState(false);
 
@@ -13,12 +14,15 @@ const HintBlock: FC<HintBlockProps> = ({ message }) => {
             setIsVisible(true);
             setShouldDisplay(true);
             const timer = setTimeout(() => {
-                setIsVisible(false); // Start fade-out
-            }, 5000); // Keep visible for 5000 ms = 5 seconds
+                setIsVisible(false);
+            }, 5000);
 
             const removeBlockTimer = setTimeout(() => {
-                setShouldDisplay(false); // Remove from DOM after fade-out
-            }, 7000); // Extra time for fade-out
+                setShouldDisplay(false);
+                if (onDismiss) {
+                    onDismiss();
+                }
+            }, 4000);
 
             return () => {
                 clearTimeout(timer);

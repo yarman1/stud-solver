@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, {FC, useState} from "react";
 import TopNavbar from "../components/TopNavbar";
 import { studAPI } from "../services/StudService";
 import { IFormOption, TInput } from "../components/SignForm";
@@ -22,6 +22,7 @@ const Account = () => {
   const [deleteUser, resultDelete] = studAPI.useDeleteUserMutation();
 
   const [userName, setUserName] = React.useState("");
+  const [isPasswordEqualityError, setPasswordEqualityError] = useState(false);
 
   const usernameFormOptions: IFormOption[] = [{ key: "userName", placeholder: "New username" }];
   const passwordFormOptions: IFormOption[] = [
@@ -39,12 +40,19 @@ const Account = () => {
   const handlePassword = (input: TInput) => {
     console.log(input);
     if (!passwordFormOptions.map((option) => option.key).every((key) => input[key] !== "")) return;
-    if (input.newPassword !== input.repeatPassword) return;
+    if (input.newPassword !== input.repeatPassword) {
+      setPasswordEqualityError(true);
+      return;
+    }
 
     updatePassword({
       oldPassword: input.oldPassword,
       newPassword: input.newPassword,
     });
+  };
+
+  const handleDismissError = () => {
+    setPasswordEqualityError(false);
   };
 
   React.useEffect(() => {
@@ -96,6 +104,7 @@ const Account = () => {
         </div>
       </div>
       {errorMessage && <HintBlock message={errorMessage} />}
+      {isPasswordEqualityError && <HintBlock message={"passwords are not equal"} onDismiss={handleDismissError} />}
     </div>
   );
 };
