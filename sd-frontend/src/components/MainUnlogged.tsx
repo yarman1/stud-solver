@@ -8,7 +8,7 @@ const MainUnlogged: FC<MainUnloggedProps> = ({}) => {
   const header = "Make learning math easier and more convenient with StudSolver";
   return (
     <div className="flex w-full">
-      <img className="ml-auto" src="/images/placeholder.jpg" />
+      <img className="ml-auto" src="/images/norm-calc.jpg" />
       <div className="flex flex-col mr-auto my-auto">
         <div className="flex flex-wrap justify-center text-2xl">
           {header.split(" ").map((word, index) => (
