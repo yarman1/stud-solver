@@ -22,23 +22,29 @@ const Menu: FC<MenuProps> = ({}) => {
   };
 
   return (
-    <div className="relative flex">
-      <img
-        onClick={() => setIsOpened((prev) => !prev)}
-        className="h-12 my-auto cursor-pointer"
-        src="/images/menu.svg"
-      />
-      {isOpened && (
-        <div className="z-10 menu-triangle absolute w-[16rem] right-0 top-full flex flex-col [&>*]:bg-white [&>*]:cursor-pointer [&>*]:py-2 [&>*]:border [&>*]:border-1 [&>*]:border-black [&>*]:w-full [&>*]:text-center border-1 border border-black items-center rounded">
-          <div onClick={() => navigate("/")}>Main page</div>
-          <div onClick={() => navigate("/history")}>History</div>
-          <div onClick={() => navigate("/account")}>Account</div>
-          <div className="text-red-500 font-bold" onClick={handleSignOut}>
-            Sign Out
-          </div>
+      <div
+          className="relative flex"
+          onMouseOver={() => setIsOpened(true)}
+          onMouseOut={() => setIsOpened(false)}
+      >
+        <div>
+          <img
+              className="h-12 my-auto cursor-pointer"
+              src="/images/menu.svg"
+          />
         </div>
-      )}
-    </div>
+        {isOpened && (
+            <div className="z-10 menu-triangle absolute w-[16rem] right-0 top-full flex flex-col [&>*]:bg-white [&>*]:cursor-pointer [&>*]:py-2 [&>*]:border [&>*]:border-1 [&>*]:border-black [&>*]:w-full [&>*]:text-center border-1 border border-black items-center rounded">
+              <div onClick={() => navigate("/")}>Main page</div>
+              <div onClick={() => navigate("/history")}>History</div>
+              <div onClick={() => navigate("/account")}>Account</div>
+              <div className="text-red-500 font-bold" onClick={handleSignOut}>
+                Sign Out
+              </div>
+            </div>
+        )}
+      </div>
+
   );
 };
 
