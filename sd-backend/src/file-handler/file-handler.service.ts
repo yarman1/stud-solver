@@ -10,8 +10,9 @@ export class FileHandlerService {
         const filename = lodash.snakeCase(name) + `_${!isReport ? 'solution' : 'report'}.${format}`;
         const contentType = `${format !== 'pdf' ? 'image' : 'application'}/${format}`;
         const headers = {
+            'Access-Control-Expose-Headers': 'Content-Disposition',
             'Content-Type': contentType,
-            'Content-Disposition': `attachment${isInline ? 'inline' : 'attachment'}; filename=${filename}`,
+            'Content-Disposition': `filename="${filename}"`,
         };
 
         return {

@@ -307,11 +307,25 @@ export const studAPI = createApi({
           }
           const blob = await res.blob();
           let file = window.URL.createObjectURL(blob);
+          console.log(res.headers);
+          const contentDisposition = res.headers.get("Content-Disposition");
+          console.log(contentDisposition)
+          let filename = "report.pdf";
+          if (contentDisposition) {
+            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+            const matches = filenameRegex.exec(contentDisposition);
+            if (matches != null && matches[1]) {
+              filename = matches[1].replace(/['"]/g, '');
+            }
+          }
+
           const link = document.createElement("a");
           link.href = file;
-          link.setAttribute("download", `report.pdf`);
+          link.setAttribute("download", filename);
           document.body.appendChild(link);
           link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(file);
           return;
         },
         body,
