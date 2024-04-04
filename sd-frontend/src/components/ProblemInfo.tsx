@@ -69,7 +69,6 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
             </div>
           ) : (
             <>
-              <div>Formatted:</div>
               <div className="flex mt-4">
                 <ProblemForm
                   formOptions={formOptions}

@@ -3,6 +3,10 @@ import {useSelector} from "react-redux";
 import {RootState} from "../store/store";
 import HintBlock from "./HintBlock";
 
+import 'katex/dist/katex.min.css';
+import {InlineMath} from "react-katex";
+import {parse} from "mathjs";
+
 export type TInput = { [key: string]: string | boolean };
 
 export interface IProblemFormOption {
@@ -25,8 +29,18 @@ const ProblemForm: FC<ProblemFormProps> = ({ formOptions, handleSubmit, buttonLa
     setInput((prev) => ({ ...prev, [key]: value }));
   };
 
+  const renderLatex = (expression: string) => {
+      try {
+          const parsedExpression = parse(expression).toTex();
+          return <InlineMath math={parsedExpression} />
+      } catch (error) {
+          return <span>{expression}</span>;
+      }
+  };
+
   return (
     <div className="flex flex-col">
+        <div>Formatted: <span id="formatted-expression"> {input.expression ? renderLatex(input.expression as string) : ''}</span></div>
       <div className="flex flex-col mb-4">
         {formOptions.map((option, index) => (
           <div key={index} className="flex [&:not(:last-child)]:mb-4 w-full justify-center items-center">
