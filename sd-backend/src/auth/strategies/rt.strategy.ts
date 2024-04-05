@@ -1,10 +1,9 @@
 import {ForbiddenException, Injectable, NotFoundException} from "@nestjs/common";
 import {PassportStrategy} from "@nestjs/passport";
-import {ExtractJwt, Strategy} from "passport-jwt";
+import {Strategy} from "passport-jwt";
 import {ConfigService} from "@nestjs/config";
 import { Request } from 'Express';
 import {JwtPayload} from "../types/jwtPayload.type";
-import {JwtPayloadRt} from "../types/jwtPayloadRt.type";
 import {UsersService} from "../../users/users.service";
 
 @Injectable()
