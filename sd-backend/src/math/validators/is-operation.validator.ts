@@ -9,7 +9,7 @@ export function IsOperation(validationOptions?: ValidationOptions) {
             propertyName: propertyName,
             options: validationOptions,
             validator: {
-                validate(value: any, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
+                validate(value: any, _?: ValidationArguments): Promise<boolean> | boolean {
                     const operations = Object.values(Operations);
                     return operations.includes(value);
                 },

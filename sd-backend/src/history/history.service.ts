@@ -14,14 +14,14 @@ export class HistoryService {
         private usersService: UsersService,
     ) {}
 
-    async getSolution(isInline: boolean, id: string, user_id: string, format?: OutputFormat | undefined) {
+    async getSolution(id: string, user_id: string, format?: OutputFormat | undefined) {
         const solution = await this.prismaService.solution.findUnique({where: {solution_id: id}});
         if (!solution || solution.user_id !== user_id) {
             throw new ForbiddenException('Access to this data is forbidden');
         }
         const problem = await this.prismaService.problem.findUnique({where: {problem_id: solution.problem_id}});
 
-        return this.fileHandlerService.createFile(solution.result_html, (!format ? MAIN_TYPE : format), problem.name, isInline);
+        return this.fileHandlerService.createFile(solution.result_html, (!format ? MAIN_TYPE : format), problem.name);
     }
 
     async getSolutions(user_id: string) {

@@ -6,9 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from "@nestjs/config";
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { CacheModule } from '@nestjs/cache-manager';
-import { join } from "path";
 import { redisStore } from 'cache-manager-redis-yet';
 import {APP_GUARD} from "@nestjs/core";
 import {AtGuard} from "./common/guards/at.guard";
@@ -19,7 +17,7 @@ import { ResourcesModule } from './resources/resources.module';
 import { TaskModule } from './task/task.module';
 import {ScheduleModule} from "@nestjs/schedule";
 import {TaskService} from "./task/task.service";
-import {ThrottlerGuard, ThrottlerModule} from "@nestjs/throttler";
+import {ThrottlerModule} from "@nestjs/throttler";
 import {ThrottlerStorageRedisService} from "nestjs-throttler-storage-redis";
 
 @Module({

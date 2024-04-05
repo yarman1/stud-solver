@@ -4,7 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpStatus, Ip,
+  HttpStatus,
   Post,
   Put,
   Query,
@@ -28,7 +28,7 @@ import {Throttle} from "@nestjs/throttler";
 import {RecoveryThrottlerGuard} from "./guards/recovery-throttler.guard";
 import {BlockCheckInterceptor} from "./interceptors/block-check.interceptor";
 import {ResetDto} from "./dto/reset.dto";
-import {ApiExtraModels, ApiResponse} from "@nestjs/swagger";
+import {ApiResponse} from "@nestjs/swagger";
 import {MessageResponseDto} from "./dto/message-response.dto";
 import {AccessTokenDto} from "./dto/access-token.dto";
 import {ResponseStatusCodeDto} from "./dto/response-status-code.dto";
@@ -142,7 +142,7 @@ export class AuthController {
   @Delete('user')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({ type: MessageResponseDto })
-  async deleteUser(@User('sub') user_id: string, @Req() req: Request, @Res() res: Response) {
+  async deleteUser(@User('sub') user_id: string, @Res() res: Response) {
     const message = await this.authService.deleteUser(user_id);
     res.clearCookie('refreshToken', {
       httpOnly: true,
@@ -182,8 +182,8 @@ export class AuthController {
 
   @Public()
   @UseInterceptors(BlockCheckInterceptor)
-  // @UseGuards(RecoveryThrottlerGuard)
-  // @Throttle({ short: { limit: 1, ttl: 15 * 60 * 1000 }, medium: { limit: 5, ttl: 2 * 60 * 60 * 1000 } })
+  @UseGuards(RecoveryThrottlerGuard)
+  @Throttle({ short: { limit: 1, ttl: 15 * 60 * 1000 }, medium: { limit: 5, ttl: 2 * 60 * 60 * 1000 } })
   @Post('recovery')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({ type: ResponseStatusCodeDto })

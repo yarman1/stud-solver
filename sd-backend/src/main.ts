@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import {ValidationPipe} from "@nestjs/common";
 import * as process from "process";
 import * as cookieParser from "cookie-parser";
-import {join} from "path";
 import {NestExpressApplication} from "@nestjs/platform-express";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 

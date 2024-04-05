@@ -126,7 +126,7 @@ export class MathService {
             const solution_id = await this.mathDbService.saveSolution(user.sub, operation_name, resultTransformed.htmlContent);
             res.json({solution_id: solution_id});
         } else {
-            const downloadData = await this.fileHandlerService.createFile(resultTransformed.htmlContent, MAIN_TYPE, resultTransformed.problemName, true);
+            const downloadData = await this.fileHandlerService.createFile(resultTransformed.htmlContent, MAIN_TYPE, resultTransformed.problemName);
             res.set(downloadData.headers).send(downloadData.file);
         }
     }

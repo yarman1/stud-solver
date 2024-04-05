@@ -1,7 +1,7 @@
 import {
     BadRequestException,
     ForbiddenException,
-    HttpException, HttpStatus,
+    HttpStatus,
     Inject,
     Injectable,
     NotFoundException
@@ -21,7 +21,6 @@ import * as nodemailer from 'nodemailer';
 import {Tokens} from "./types/tokens.type";
 import {RequestRecoveryDto} from "./dto/request-recovery.dto";
 import {RecoveryDto} from "./dto/recovery.dto";
-import {ThrottlerException} from "@nestjs/throttler";
 import {InjectQueue} from "@nestjs/bull";
 import {Queue} from "bull";
 import {Response} from "Express";
@@ -217,7 +216,7 @@ export class AuthService {
             const job = await this.recoveryQueue.add({ email }, {
                 removeOnFail: true,
             });
-            const result = await job.finished();
+            await job.finished();
             const token = uuid();
             await this.cacheManager.set(token, email, 15 * 60 * 1000);
             await this.sendRecoverEmail(email, token);

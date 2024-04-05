@@ -1,12 +1,12 @@
 import {Injectable} from '@nestjs/common';
 import puppeteer from "puppeteer";
 import {OutputFormat} from "../common/types/output-format.type";
-import * as lodash from "lodash";
+import lodash from "lodash";
 
 @Injectable()
 export class FileHandlerService {
     constructor() {}
-    private async generateDownloadData(file: Buffer, format: OutputFormat, name: string, isReport: boolean, isInline: boolean) {
+    private async generateDownloadData(file: Buffer, format: OutputFormat, name: string, isReport: boolean) {
         const filename = lodash.snakeCase(name) + `_${!isReport ? 'solution' : 'report'}.${format}`;
         const contentType = `${format !== 'pdf' ? 'image' : 'application'}/${format}`;
         const headers = {
@@ -21,7 +21,7 @@ export class FileHandlerService {
         };
     }
 
-    async createFile(htmlContent: string, format: OutputFormat, problemName: string, isInline: boolean) {
+    async createFile(htmlContent: string, format: OutputFormat, problemName: string) {
         const browser = await puppeteer.launch({
             headless: "new",
         });
@@ -43,7 +43,7 @@ export class FileHandlerService {
 
         await browser.close();
 
-        return await this.generateDownloadData(file, format, problemName, false, isInline);
+        return await this.generateDownloadData(file, format, problemName, false);
     }
 
     async createReport(htmlContents: string[], userName: string) {
@@ -79,7 +79,7 @@ export class FileHandlerService {
     </head>
     <body>`;
 
-        for (const [index, content] of htmlContents.entries()) {
+        for (const [_, content] of htmlContents.entries()) {
             const blob = Buffer.from(content).toString('base64');
             completeHtml += `<iframe src="data:text/html;base64,${blob}"></iframe>`;
         }
@@ -98,7 +98,7 @@ export class FileHandlerService {
 
         await browser.close();
 
-        return await this.generateDownloadData(file, OutputFormat.PDF, userName, true, false);
+        return await this.generateDownloadData(file, OutputFormat.PDF, userName, true);
     }
 
 }

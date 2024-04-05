@@ -1,4 +1,4 @@
-import {IsBoolean, IsBooleanString, IsNotEmpty, IsString} from "class-validator";
+import {IsBoolean, IsNotEmpty, IsString} from "class-validator";
 import {TaskDto} from "../task.dto";
 import {ApiProperty} from "@nestjs/swagger";
 

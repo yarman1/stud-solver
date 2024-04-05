@@ -9,7 +9,7 @@ export function IsOutputFormat(validationOptions?: ValidationOptions) {
             propertyName: propertyName,
             options: validationOptions,
             validator: {
-                validate(value: any, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
+                validate(value: any, _?: ValidationArguments): Promise<boolean> | boolean {
                     const formats = Object.values(OutputFormat);
                     return formats.includes(value);
                 },

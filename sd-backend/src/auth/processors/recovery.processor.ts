@@ -17,7 +17,7 @@ export class RecoveryProcessor {
         if (!counter) {
             await this.cacheManager.set(email + ';recovery-request-counter', 1, 60 * 60 * 1000);
         } else {
-            if (counter <= 500000) {
+            if (counter <= 5) {
                 const ttl = await this.cacheManager.store.ttl(email + ';recovery-request-counter');
                 counter++;
                 await this.cacheManager.set(email + ';recovery-request-counter', counter, ttl);

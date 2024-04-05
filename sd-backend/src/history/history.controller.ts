@@ -2,23 +2,18 @@ import {
     Body,
     Controller,
     Delete,
-    ForbiddenException,
     Get,
     Param,
-    ParseArrayPipe,
     Post,
     Query,
     Req,
     Res
 } from '@nestjs/common';
-import {FileHandlerService} from "../file-handler/file-handler.service";
-import {MAIN_TYPE} from "../common/constants/main-type.constant";
 import {HistoryService} from "./history.service";
 import {Response} from "express";
 import {Request} from "Express";
 import {JwtPayload} from "../auth/types/jwtPayload.type";
 import {SolutionIdDto} from "./dto/solution-id.dto";
-import {OutputFormat} from "../common/types/output-format.type";
 import {DownloadSolutionDto} from "./dto/download-solution.dto";
 import {ApiResponse} from "@nestjs/swagger";
 import {MessageResponseDto} from "../auth/dto/message-response.dto";
@@ -33,7 +28,7 @@ export class HistoryController {
     @ApiResponse({description: 'picture'})
     async getSolution(@Param('id') id: string, @Res() res: Response, @Req() req: Request) {
         const user = req.user as JwtPayload;
-        const downloadData = await this.historyService.getSolution(true, id, user.sub);
+        const downloadData = await this.historyService.getSolution(id, user.sub);
         res.set(downloadData.headers).send(downloadData.file);
     }
 
@@ -46,7 +41,7 @@ export class HistoryController {
     ) {
         const user = req.user as JwtPayload;
         const { solutionId, format } = query;
-        const downloadData = await this.historyService.getSolution(false, solutionId, user.sub, format);
+        const downloadData = await this.historyService.getSolution(solutionId, user.sub, format);
         res.set(downloadData.headers).send(downloadData.file);
     }
 
