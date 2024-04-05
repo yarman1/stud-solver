@@ -53,7 +53,7 @@ def solve_integral(expression_str, lower_limit_str=None, upper_limit_str=None, i
             else:
                 solution = sp.latex(definite_integral_result)
     else:
-        # Compute the indefinite integral
+        # Compute the integral
         indefinite_integral_expr = sp.integrate(expr, x)
         solution = sp.latex(indefinite_integral_expr)
 
