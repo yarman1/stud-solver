@@ -4,7 +4,7 @@ import Area from "./Area";
 
 interface AreasProps {}
 
-const Areas: FC<AreasProps> = ({}) => {
+const Areas: FC<AreasProps> = (_) => {
   const { data, isLoading } = studAPI.useGetAreasQuery();
   return !isLoading ? (
     <div className="m-auto flex flex-col items-center">

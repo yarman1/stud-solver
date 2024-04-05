@@ -1,9 +1,7 @@
 import React from "react";
 import AppRouter from "./components/Router";
-import { useAppDispatch, useAppSelector } from "./hooks/redux";
-import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "./hooks/redux";
 import { UserSlice } from "./store/reducers/UserSlice";
-import { studAPI } from "./services/StudService";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -13,7 +11,7 @@ function App() {
     if (!token) return;
     dispatch(UserSlice.actions.update_logged(true));
     dispatch(UserSlice.actions.update_token(token));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="w-screen h-screen">

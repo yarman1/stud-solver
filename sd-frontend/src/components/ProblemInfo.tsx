@@ -10,11 +10,6 @@ interface ProblemInfoProps {
   problem: IProblemRes;
 }
 
-interface IProblemOptions {
-  "indef-int": IProblemFormOption[];
-  "def-int": IProblemFormOption[];
-}
-
 const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
   const [math, result] = studAPI.useMathMutation();
   const navigate = useNavigate();
@@ -62,7 +57,7 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
         <div className={`flex flex-col p-8 w-1/2 ${result.isSuccess ? 'w-full' : 'w-1/2'} border border-1 border-black rounded items-center`}>
           {result.isSuccess && typeof result.data === "string" ? (
             <div>
-              <img src={result.data} />
+              <img src={result.data} alt="result image"/>
               <div
                 onClick={() => saveImage(result.data as string)}
                 className="mx-auto my-4 px-4 py-2 border border-1 border-black w-[4rem] text-center rounded cursor-pointer"

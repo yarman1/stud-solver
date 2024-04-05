@@ -1,6 +1,5 @@
-import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { RootState } from "../store/store";
-import { UserSlice } from "../store/reducers/UserSlice";
+import {BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError} from "@reduxjs/toolkit/query/react";
+import {UserSlice} from "../store/reducers/UserSlice";
 
 export interface ISignUpReq {
   email: string;
@@ -100,9 +99,8 @@ interface ISignInRes {
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:3567",
-  prepareHeaders: (headers, { getState }) => {
-    const storageToken = localStorage.getItem("token");
-    const token = storageToken;
+  prepareHeaders: (headers, _) => {
+    const token = localStorage.getItem("token");
 
     // If we have a token set in state, let's assume that we should be passing it.
     if (token) {
@@ -245,8 +243,7 @@ export const studAPI = createApi({
             return res.json();
           } else {
             const blob = await res.blob();
-            let image = window.URL.createObjectURL(blob);
-            return image;
+            return window.URL.createObjectURL(blob);
           }
         },
       }),
@@ -258,8 +255,7 @@ export const studAPI = createApi({
         method: "GET",
         responseHandler: async (res) => {
           const blob = await res.blob();
-          let image = window.URL.createObjectURL(blob);
-          return image;
+          return window.URL.createObjectURL(blob);
         },
       }),
     }),
@@ -300,7 +296,7 @@ export const studAPI = createApi({
         method: "POST",
         responseHandler: async (res) => {
           if (res.status == 400) {
-            const resJson = await res.json();
+            await res.json();
             return;
           }
           const blob = await res.blob();
