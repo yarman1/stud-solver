@@ -57,10 +57,6 @@ const History: FC<HistoryProps> = ({}) => {
     generateReport({ solution_id: solutionIDs });
   };
 
-  React.useEffect(() => {
-    console.log(result);
-  }, [result]);
-
   return (
     <div>
       <TopNavbar />

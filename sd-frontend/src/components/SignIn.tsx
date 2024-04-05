@@ -25,11 +25,9 @@ const SignIn: FC<SignInProps> = ({ handleRecovery, handleCreate }) => {
       email: input.email,
       password: input.password,
     });
-    console.log(input);
   };
 
   React.useEffect(() => {
-    console.log(result);
     if (result.isSuccess) {
       localStorage.setItem("token", result.data.access_token);
       dispatch(UserSlice.actions.update_logged(true));

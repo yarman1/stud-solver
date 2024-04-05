@@ -53,7 +53,6 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
     if (result.isSuccess && typeof result.data !== "string" && result.data.solution_id) {
       navigate(`/history/solution/${result.data.solution_id}`);
     }
-    console.log(result);
   }, [result]);
 
   return (

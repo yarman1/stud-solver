@@ -132,7 +132,6 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
     const token = (refreshResult.data as { access_token: string }).access_token;
     if (token) {
       // store the new token
-      console.log(refreshResult.data);
       localStorage.setItem("token", token);
       api.dispatch(UserSlice.actions.update_logged(true));
       api.dispatch(UserSlice.actions.update_token(token));
@@ -302,14 +301,11 @@ export const studAPI = createApi({
         responseHandler: async (res) => {
           if (res.status == 400) {
             const resJson = await res.json();
-            console.log(resJson.message);
             return;
           }
           const blob = await res.blob();
           let file = window.URL.createObjectURL(blob);
-          console.log(res.headers);
           const contentDisposition = res.headers.get("Content-Disposition");
-          console.log(contentDisposition)
           let filename = "report.pdf";
           if (contentDisposition) {
             const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;

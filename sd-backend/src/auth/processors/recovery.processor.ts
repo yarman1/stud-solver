@@ -13,7 +13,6 @@ export class RecoveryProcessor {
     @Process()
     async processRecoveryJob(job: Job<RequestRecoveryDto>) {
         const { email } = job.data;
-        console.log('something');
         let counter = await this.cacheManager.get<number>(email + ';recovery-request-counter');
         if (!counter) {
             await this.cacheManager.set(email + ';recovery-request-counter', 1, 60 * 60 * 1000);

@@ -13,10 +13,8 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
         super({
             jwtFromRequest: (req: Request) => {
                 let token: string = null;
-                console.log(req.cookies)
                 if (req && req.cookies) {
                     token = req.cookies['refreshToken'];
-                    console.log(token)
                 }
                 return token;
             },

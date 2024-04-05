@@ -17,10 +17,6 @@ const Area: FC<AreaProps> = ({}) => {
   dispatch(UserSlice.actions.updateBackLink("/"));
   dispatch(UserSlice.actions.update_reset(false));
 
-  React.useEffect(() => {
-    console.log(area);
-  }, [area]);
-
   return (
     <div>
       <TopNavbar isBackButton backUrl="/" />

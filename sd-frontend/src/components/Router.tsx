@@ -12,7 +12,6 @@ import Problem from "../pages/Problem";
 
 const AppRouter = () => {
   const { isLogged } = useAppSelector((state) => state.UserReducer);
-  console.log(isLogged);
 
   return (
     <BrowserRouter>

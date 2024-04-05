@@ -35,7 +35,6 @@ export class MathService {
     }
 
     async computeIntegralIndefinite(dto: IndefiniteIntegralDto): Promise<ResultDto> {
-        console.log(this.configService)
         try {
             const response: AxiosResponse<ResultDto> = await axios.post(this.configService.get<string>('PYTHON_SERVER_URL') + "/solve-integral",{
                 ...dto

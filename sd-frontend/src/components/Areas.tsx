@@ -6,7 +6,6 @@ interface AreasProps {}
 
 const Areas: FC<AreasProps> = ({}) => {
   const { data, isLoading } = studAPI.useGetAreasQuery();
-  console.log(data);
   return !isLoading ? (
     <div className="m-auto flex flex-col items-center">
       <div className="text-3xl mb-4">Choose the area:</div>

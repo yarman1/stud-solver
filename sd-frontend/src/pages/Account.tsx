@@ -38,7 +38,6 @@ const Account = () => {
   };
 
   const handlePassword = (input: TInput) => {
-    console.log(input);
     if (!passwordFormOptions.map((option) => option.key).every((key) => input[key] !== "")) return;
     if (input.newPassword !== input.repeatPassword) {
       setPasswordEqualityError(true);
@@ -58,11 +57,9 @@ const Account = () => {
   React.useEffect(() => {
     if (isLoading || !data?.userName) return;
     setUserName(data.userName);
-    console.log(data);
   }, [data]);
 
   React.useEffect(() => {
-    console.log(resultUsername);
     if (resultUsername.isSuccess && resultUsername.data?.userName) {
       setUserName(resultUsername.data?.userName);
     }
@@ -70,7 +67,6 @@ const Account = () => {
 
   React.useEffect(() => {
     if (resultUsername.isSuccess && data?.userName) {
-      console.log(resultPassword);
     }
   }, [resultPassword]);
 

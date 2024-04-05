@@ -14,8 +14,6 @@ const Recovery: FC<RecoveryProps> = ({}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const token = searchParams.get("token");
 
-  console.log(token);
-
   const formOptionsEmail: IFormOption[] = [{ key: "email", placeholder: "Email" }];
   const formOptionsPassword: IFormOption[] = [
     { key: "password", placeholder: "Enter new password" },

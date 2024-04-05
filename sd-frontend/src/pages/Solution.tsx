@@ -17,7 +17,6 @@ const Solution: FC<SolutionProps> = ({}) => {
   const [getSolutionFile, result] = studAPI.useFileSolutionMutation();
   const [removeFromHistory, resultRemove] = studAPI.useDeleteSolutionMutation();
 
-  console.log(data);
   const handleClick = (format: TFileFormat) => {
     getSolutionFile({
       solutionId: id as string,

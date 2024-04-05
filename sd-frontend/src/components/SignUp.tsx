@@ -33,7 +33,6 @@ const SignUp: FC<SignUpProps> = ({ handleHave }) => {
       password: input.password,
       userName: input.username,
     });
-    console.log(input);
   };
 
   const handleDismissError = () => {
