@@ -11,7 +11,7 @@ function App() {
     if (!token) return;
     dispatch(UserSlice.actions.update_logged(true));
     dispatch(UserSlice.actions.update_token(token));
-  }, [dispatch]);
+  }, []);
 
   return (
     <div className="w-screen h-screen">

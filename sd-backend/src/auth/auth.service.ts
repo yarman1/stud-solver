@@ -23,7 +23,7 @@ import {RequestRecoveryDto} from "./dto/request-recovery.dto";
 import {RecoveryDto} from "./dto/recovery.dto";
 import {InjectQueue} from "@nestjs/bull";
 import {Queue} from "bull";
-import {Response} from "Express";
+import {Response} from "express";
 import {ResetDto} from "./dto/reset.dto";
 
 const scrypt = promisify(_scrypt);

@@ -19,7 +19,7 @@ import {Public} from "../common/decorators/public.decorator";
 import {RtGuard} from "../common/guards/rt.guard";
 import {User} from "../common/decorators/user.decorator";
 import {JwtPayload} from "./types/jwtPayload.type";
-import {Request, Response} from "Express";
+import {Request, Response} from "express";
 import {UsernameDto} from "./dto/username.dto";
 import {UpdatePasswordDto} from "./dto/update-password.dto";
 import {RecoveryDto} from "./dto/recovery.dto";

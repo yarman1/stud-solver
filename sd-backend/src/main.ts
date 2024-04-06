@@ -12,7 +12,14 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true , transform: true}));
   app.use(cookieParser());
   app.setViewEngine('ejs');
-  app.enableCors({credentials: true, origin: 'http://localhost:3000'});
+  app.enableCors({credentials: true,   origin: [
+      'http://localhost:3000',
+      'http://studsolver.online',
+      'http://www.studsolver.online',
+      'https://studsolver.online',
+      'https://www.studsolver.online',
+      'http://localhost'
+    ],});
 
   const config = new DocumentBuilder()
       .setTitle('StudSolver')

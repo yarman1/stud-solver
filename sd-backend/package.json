@@ -18,7 +18,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "create-migration": "dotenv -e .development.env npx prisma migrate dev --create-only"
+    "create-migration": "dotenv -e .development.env npx prisma migrate dev --create-only",
+    "migrate": "dotenv -e .production.env npx prisma migrate deploy",
+    "seed:dev": "dotenv -e .development.env npx prisma db seed",
+    "seed:prod": "dotenv -e .production.env npx prisma db seed"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed/seed.ts"
   },
   "dependencies": {
     "@nestjs/bull": "^10.1.0",
@@ -46,6 +52,7 @@
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.1.0",
     "cross-env": "^7.0.3",
+    "csv-parser": "^3.0.0",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.9",
     "ioredis": "^5.3.2",

@@ -1,9 +1,7 @@
 import React, { FC } from "react";
 import TopNavbar from "../components/TopNavbar";
 import { studAPI } from "../services/StudService";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
-import {useAppDispatch} from "../hooks/redux";
-import {UserSlice} from "../store/reducers/UserSlice";
+import {useNavigate, useParams} from "react-router-dom";
 
 type TFileFormat = "pdf" | "png" | "jpeg";
 
@@ -11,10 +9,10 @@ interface SolutionProps {}
 
 const Solution: FC<SolutionProps> = ({}) => {
   const { id } = useParams();
-  const { data, isSuccess } = studAPI.useGetSolutionQuery({ id: id as string });
+  const { data } = studAPI.useGetSolutionQuery({ id: id as string });
   const navigate = useNavigate();
 
-  const [getSolutionFile, result] = studAPI.useFileSolutionMutation();
+  const [getSolutionFile] = studAPI.useFileSolutionMutation();
   const [removeFromHistory, resultRemove] = studAPI.useDeleteSolutionMutation();
 
   const handleClick = (format: TFileFormat) => {

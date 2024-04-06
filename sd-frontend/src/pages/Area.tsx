@@ -14,8 +14,10 @@ const Area: FC<AreaProps> = ({}) => {
   const { data: area, isLoading, isSuccess } = studAPI.useGetAreaQuery({ id: id || "" });
   const dispatch = useAppDispatch();
 
-  dispatch(UserSlice.actions.updateBackLink("/"));
-  dispatch(UserSlice.actions.update_reset(false));
+  React.useEffect(() => {
+    dispatch(UserSlice.actions.updateBackLink("/"));
+    dispatch(UserSlice.actions.update_reset(false));
+  });
 
   return (
     <div>

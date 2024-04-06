@@ -10,8 +10,7 @@ import {
     Res
 } from '@nestjs/common';
 import {HistoryService} from "./history.service";
-import {Response} from "express";
-import {Request} from "Express";
+import {Response, Request} from "express";
 import {JwtPayload} from "../auth/types/jwtPayload.type";
 import {SolutionIdDto} from "./dto/solution-id.dto";
 import {DownloadSolutionDto} from "./dto/download-solution.dto";

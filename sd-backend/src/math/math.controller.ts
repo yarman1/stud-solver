@@ -1,7 +1,7 @@
 import {Body, Controller, HttpCode, HttpStatus, Post, Query, Req, Res} from '@nestjs/common';
 import {Public} from "../common/decorators/public.decorator";
 import {MathService} from "./math.service";
-import {Response} from "Express";
+import {Response} from "express";
 import {CustomRequest} from "../types/custom-request.type";
 import {Throttle} from "@nestjs/throttler";
 import {ApiResponse} from "@nestjs/swagger";

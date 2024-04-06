@@ -1,7 +1,8 @@
 import {Injectable} from '@nestjs/common';
 import puppeteer from "puppeteer";
 import {OutputFormat} from "../common/types/output-format.type";
-import lodash from "lodash";
+import * as lodash from 'lodash';
+
 
 @Injectable()
 export class FileHandlerService {
@@ -24,6 +25,15 @@ export class FileHandlerService {
     async createFile(htmlContent: string, format: OutputFormat, problemName: string) {
         const browser = await puppeteer.launch({
             headless: "new",
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--disable-gpu'
+            ],
         });
         const page = await browser.newPage();
 
@@ -47,7 +57,18 @@ export class FileHandlerService {
     }
 
     async createReport(htmlContents: string[], userName: string) {
-        const browser = await puppeteer.launch({ headless: "new" });
+        const browser = await puppeteer.launch({
+            headless: "new",
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--disable-gpu'
+            ],
+        });
         const page = await browser.newPage();
 
         let completeHtml = `

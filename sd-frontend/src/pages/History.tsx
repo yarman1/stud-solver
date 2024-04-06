@@ -11,14 +11,16 @@ import {UserSlice} from "../store/reducers/UserSlice";
 
 interface HistoryProps {}
 
-const History: FC<HistoryProps> = ({}) => {
+const History: FC<HistoryProps> = (_) => {
   const { data, isSuccess } = studAPI.useGetSolutionsQuery();
   const [generateReport, result] = studAPI.useReportHistoryMutation();
   const errorMessage = useSelector((state: RootState) => state.UserReducer.errorMessage);
   const dispatch = useAppDispatch();
 
-  dispatch(UserSlice.actions.updateBackLink('/history'));
-  dispatch(UserSlice.actions.update_reset(false));
+  React.useEffect(() => {
+    dispatch(UserSlice.actions.updateBackLink('/history'));
+    dispatch(UserSlice.actions.update_reset(false));
+  });
 
   const [solutionIDs, setSolutionIDs] = React.useState<string[]>([]);
 

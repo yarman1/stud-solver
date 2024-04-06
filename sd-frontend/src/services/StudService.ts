@@ -98,7 +98,7 @@ interface ISignInRes {
 }
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:3567",
+  baseUrl: process.env.REACT_APP_API_URL,
   prepareHeaders: (headers, _) => {
     const token = localStorage.getItem("token");
 
@@ -113,7 +113,7 @@ const baseQuery = fetchBaseQuery({
 });
 
 const refreshQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:3567",
+  baseUrl: process.env.REACT_APP_API_URL,
   credentials: "include",
 });
 
@@ -295,7 +295,7 @@ export const studAPI = createApi({
         url: "/history/report",
         method: "POST",
         responseHandler: async (res) => {
-          if (res.status == 400) {
+          if (res.status === 400) {
             await res.json();
             return;
           }

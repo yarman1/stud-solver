@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  nginx:
+    build: ./sd-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - math-server
+
+  backend:
+    build: ./sd-backend
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+      - redis
+      - math-server
+
+  math-server:
+    build: ./sd-math-server
+
+  postgres:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Pilot0024
+      POSTGRES_DB: studsolver
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6
+
+volumes:
+  postgres-data:

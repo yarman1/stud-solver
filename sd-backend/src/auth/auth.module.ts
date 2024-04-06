@@ -18,6 +18,7 @@ import {RecoveryProcessor} from "./processors/recovery.processor";
       JwtModule.register({}),
       BullModule.registerQueue({
         name: 'recovery-queue',
+          redis: process.env.REDIS_URL
       })
   ]
 })

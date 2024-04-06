@@ -30,7 +30,7 @@ import {ThrottlerStorageRedisService} from "nestjs-throttler-storage-redis";
       isGlobal: true,
       store: redisStore,
       ttl: 7 * 24 * 60 * 60 * 1000,
-      url: 'redis://localhost:6379',
+      url: `${process.env.REDIS_URL}`,
     }),
     ScheduleModule.forRoot(),
     PrismaModule,
@@ -53,7 +53,7 @@ import {ThrottlerStorageRedisService} from "nestjs-throttler-storage-redis";
         limit: 10,
       }
     ],
-    storage: new ThrottlerStorageRedisService()})
+    storage: new ThrottlerStorageRedisService(process.env.REDIS_URL)})
   ],
   controllers: [AppController],
   providers: [

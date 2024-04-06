@@ -18,17 +18,23 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
 
   const formOptions: IProblemFormOption[] = JSON.parse(problem.input_schema);
 
-  if (result.isSuccess) {
-    if (typeof result.data !== "string" && result.data.solution_id) {
-      dispatch(UserSlice.actions.update_reset(false));
+ React.useEffect(() => {
+    if (result.isSuccess) {
+      if (typeof result.data !== "string" && result.data.solution_id) {
+        dispatch(UserSlice.actions.update_reset(false));
+      } else {
+        dispatch(UserSlice.actions.update_reset(true));
+      }
+      dispatch(UserSlice.actions.updateBackLink(`/problem/${problem.problem_id}`));
     } else {
-      dispatch(UserSlice.actions.update_reset(true));
+      dispatch(UserSlice.actions.update_reset(false));
+      dispatch(UserSlice.actions.updateBackLink(`/area/${problem.area_id}`));
     }
-    dispatch(UserSlice.actions.updateBackLink(`/problem/${problem.problem_id}`));
-  } else {
-    dispatch(UserSlice.actions.update_reset(false));
-    dispatch(UserSlice.actions.updateBackLink(`/area/${problem.area_id}`));
-  }
+
+    if (result.isSuccess && typeof result.data !== "string" && result.data.solution_id) {
+      navigate(`/history/solution/${result.data.solution_id}`);
+    }
+  }, [result, dispatch, navigate, problem.problem_id, problem.area_id]);
 
   const handleSubmit = (input: TInput) => {
     const type = problem.operation_name;
@@ -48,7 +54,7 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
     if (result.isSuccess && typeof result.data !== "string" && result.data.solution_id) {
       navigate(`/history/solution/${result.data.solution_id}`);
     }
-  }, [result]);
+  }, [result, navigate]);
 
   return (
     <div className="flex flex-col items-center mt-8 p-4">
@@ -57,7 +63,7 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
         <div className={`flex flex-col p-8 w-1/2 ${result.isSuccess ? 'w-full' : 'w-1/2'} border border-1 border-black rounded items-center`}>
           {result.isSuccess && typeof result.data === "string" ? (
             <div>
-              <img src={result.data} alt="result image"/>
+              <img src={result.data}/>
               <div
                 onClick={() => saveImage(result.data as string)}
                 className="mx-auto my-4 px-4 py-2 border border-1 border-black w-[4rem] text-center rounded cursor-pointer"
@@ -81,7 +87,7 @@ const ProblemInfo: FC<ProblemInfoProps> = ({ problem }) => {
           (
               <div className="w-1/2 p-4">
                 <div>{problem.description}</div>
-                <div><a className="text-gray-400" href={problem.broad_description_url} target="_blank">Read more...</a></div>
+                <div><a className="text-gray-400" href={problem.broad_description_url} target="_blank" rel="noreferrer">Read more...</a></div>
               </div>
           ) :
           ('')
