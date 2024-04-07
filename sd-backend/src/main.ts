@@ -14,10 +14,10 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   app.enableCors({credentials: true,   origin: [
       'http://localhost:3000',
-      'http://studsolver.online',
-      'http://www.studsolver.online',
-      'https://studsolver.online',
-      'https://www.studsolver.online',
+      'http://your.domain',
+      'http://www.your.domain',
+      'https://your.domain',
+      'https://www.your.domain',
       'http://localhost'
     ],});
 

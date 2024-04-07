@@ -29,7 +29,7 @@ const Recovery: FC<RecoveryProps> = ({}) => {
   const handleReset = (input: TInput) => {
     if (!token) return;
     if (!formOptionsPassword.map((option) => option.key).every((key) => input[key] !== "")) return;
-    if (input.password !== input.repeat_password) return;
+    // if (input.password !== input.repeat_password) return;
 
     passwordReset({ token: token, newPassword: input.password });
   };
