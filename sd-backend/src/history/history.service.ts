@@ -62,7 +62,7 @@ export class HistoryService {
         const user = await this.usersService.findOneById(userId);
         const htmlContentArray: string[] = [];
         for (const solutionId of solutionIdArray){
-            const solution = await this.prismaService.solution.findUnique({where: {solution_id: solutionId}});
+            const solution = await this.prismaService.solution.findUnique({where: {solution_id: solutionId, user_id: userId}});
             if (!solution) {
                 throw new BadRequestException('One of the solutions does not exist');
             }

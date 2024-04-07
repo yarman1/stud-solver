@@ -5,6 +5,8 @@ export class SolutionIdDto {
     @ApiProperty()
     @IsArray()
     @IsUUID(4, {each: true})
-    @ArrayMinSize(1)
+    @ArrayMinSize(2, {
+        message: ''
+    })
     public solution_id: string[];
 }
