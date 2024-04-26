@@ -55,7 +55,7 @@ const History: FC<HistoryProps> = (_) => {
   };
 
   const handleReport = () => {
-    if (solutionIDs.length === 0) return;
+    if (solutionIDs.length < 2) return;
     generateReport({ solution_id: solutionIDs });
   };
 

@@ -69,6 +69,10 @@ export class HistoryService {
             htmlContentArray.push(solution.result_html);
         }
 
+        if (htmlContentArray.length < 2) {
+            throw new BadRequestException('Report must contain two or more solutions');
+        }
+
         return await this.fileHandlerService.createReport(htmlContentArray, user.user_name);
     }
 }
